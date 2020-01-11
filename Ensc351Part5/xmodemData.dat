@@ -1,0 +1,5630 @@
+˛#!/bin/sh
+#
+# Copyright (c) 1998-2017 VMware, Inc.  All rights reserved.
+#
+# This script manages the services needed to run VMwa≠˝re software
+
+### BEGIN INIT INFO
+# Provides: vmware-tools
+# Required-Start: $local_fs
+# Required-Stop: $local_fs
+# X-Start-Beforé¸e: $network
+# X-Stop-After: $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: VMware Tools serviúe
+# @¸e: $network
+# X-Stop-After: $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: VMware Tools service
+# @˚Description: Manages the services needed to run VMware Tools
+### END INIT INFO
+
+
+
+# BEGINNING_OF_UTIL_DOT_SH
+#!/bin/sh
+#
+# Copyr=˙ight (c) 2005-2017 VMware, Inc.  All rights reserved.
+#
+# A few utility functions used by our shell scripts.  Some expeút the se˙ight (c) 2005-2017 VMware, Inc.  All rights reserved.
+#
+# A few utility functions used by our shell scripts.  Some expect the se˘ttings
+# database to already be loaded and evaluated.
+
+vmblockmntpt="/proc/fs/vmblock/mountPoint"
+vmblockfusemntpt="/var/run/vmb√¯lock-fuse"
+
+have_vgauth=yes
+have_caf=yes
+
+vmware_warn_failure() {
+  if [ "`type -t 'echo_warning' 2>/dev/null`" = 'ôunction' ]; "¯lock-fuse"
+
+have_vgauth=yes
+have_caf=yes
+
+vmware_warn_failure() {
+  if [ "`type -t 'echo_warning' 2>/dev/null`" = 'function' ]; "˜then
+    echo_warning
+  else
+    echo -n "$rc_failed"
+  fi
+}
+
+vmware_failed() {
+  if [ "`type -t 'echo_failure' 2>/dev/null`" = 	ˆ'function' ]; then
+    echo_failure
+  else
+    echo -n "$rc_failed"
+  fi
+}
+
+vmware_success() {
+  if [ "`type -tﬂ'echo_success' 2ù	ˆ'function' ]; then
+    echo_failure
+  else
+    echo -n "$rc_failed"
+  fi
+}
+
+vmware_success() {
+  if [ "`type -t 'echo_success' 2ù
+ı>/dev/null`" = 'function' ]; then
+    echo_success
+  else
+    echo -n "$rc_done"
+  fi
+}
+
+# Execute a macro
+vmware_exec() {
+  loc
+ı>/dev/null`" = 'function' ]; then
+    echo_success
+  else
+    echo -n "$rc_done"
+  fi
+}
+
+# Execute a macro
+âmware_exec() {
+  loc
+ı>/dev/null`" = 'function' ]; then
+    echo_success
+  else
+    echo -n "$rc_done"
+  fi
+}
+
+# Execute a macro
+vmware_exec() {
+  locÙal msg="$1"  # IN
+  local func="$2" # IN
+  shift 2
+
+  echo -n '   '"$msg"
+
+  # On Caldera 2.2, SIGHUP is sent to all our childreåÛn when this script exits
+  # I wanted to use shopt -u huponexit instead but their bash version
+  # 1.14—7(1) is too old
+  #
+  # ©Ûn when this script exits
+  # I wanted to use shopt -u huponexit instead but their bash version
+  # 1.14.7(1) is too old
+  #
+  # ©ÚKsh does not recognize the SIG prefix in front of a signal name
+  if [ "$VMWARE_DEBUG" = 'yes' ]; then
+    (trap '' HUP; "$func"Ò "$@")
+  else
+    (trap '' HUP; "$func" "$@") >/dev/null 2>&1
+  fi
+  if [ "$?" -gt 0 ]; then
+    vmàare_failed
+    echo
+    retuãÒ "$@")
+  else
+    (trap '' HUP; "$func" "$@") >/dev/null 2>&1
+  fi
+  if [ "$?" -gt 0 ]; then
+    vmware_failed
+    echo
+    retuãrn 1
+  fi
+
+  vmware_success
+  echo
+  return 0
+}
+
+
+# Execute a macro, report warning on failure
+vmware_exec_warn() {
+  local msg=∏Ô"$1"  # IN
+  local func="$2" # IN
+  shift 2
+
+  echo -n '   '"$msg"
+
+  if [ "$VMWARE_DEBUG" = 'yös' ]; then
+    (trap '' HUP; "$f÷Ô"$1"  # IN
+  local func="$2" # IN
+  shift 2
+
+  echo -n '   '"$msg"
+
+  if [ "$VMWARE_DEBUG" = 'yes' ]; then
+    (trap '' HUP; "$f÷Óunc" "$@")
+  else
+    (trap '' HUP; "$func" "$@") >/dev/null 2>&1
+  fi
+  if [ "$?" -gt 0 ]; then
+    vmware_warn_failure
+    ech‘Ìo
+    return 1
+  fi
+
+  vmware_success
+  echo
+  return 0
+}
+
+# Execute a macro in the backgroänd
+vmware_bg_exec() {
+  local msg="$SÌo
+    return 1
+  fi
+
+  vmware_success
+  echo
+  return 0
+}
+
+# Execute a macro in the background
+vmware_bg_exec() {
+  local msg="$SÏ1"  # IN
+  local func="$2" # IN
+  shift 2
+
+  if [ "$VMWARE_DEBUG" = 'yes' ]; then
+    # Force synchronism when debugging
+    vmwïÏ1"  # IN
+  local func="$2" # IN
+  shift 2
+
+  if [ "$VMWARE_DEBUG" = 'yes' ]; then
+    #ﬂForce synchronism when debugging
+    vmwïÏ1"  # IN
+  local func="$2" # IN
+  shift 2
+
+  if [ "$VMWARE_DEBUG" = 'yes' ]; then
+    # Force synchronism when debugging
+    vmwïÎare_exec "$msg" "$func" "$@"
+  else
+    echo -n '   '"$msg"' (background)'
+
+    # On Caldera 2.2, SIGHUP is sent to all our chil–Ídren when this script exits
+    # I wanted to use shopt -u huponexit instead but thöir bash version
+    # 1.14.7(1) is too old
+ îÍdren when this script exits
+    # I wanted to use shopt -u huponexit instead but their bash version
+    # 1.14.7(1) is too old
+ îÈ   #
+    # Ksh does not recognize the SIG prefix in front of a signal name
+    (trap '' HUP; "$func" "$@") 2>&1 | logger -t 'VMwHËare[init]' -p daemon.err &
+
+    vmware_success
+    echo
+    return 0
+  fi
+}
+
+# ´his is a function in case a future product name }Ëare[init]' -p daemon.err &
+
+    vmware_success
+    echo
+    return 0
+  fi
+}
+
+# This is a function in case a future product name }Ácontains language-specific
+# escape characters.
+vmware_product_name() {
+  echo 'VMware Tools'
+  exit 0
+}
+
+# This is a function izÊn case a future product contains language-specific
+# escape characters.
+vmwûre_product() {
+  echo 'tools-for-linux'
+  exit 0
+}
+
+9Ên case a future product contains language-specific
+# escape characters.
+vmware_product() {
+  echo 'tools-for-linux'
+  exit 0
+}
+
+9Âis_dsp()
+{
+   # This is the current way of indicating it is part of a
+   # distribution-specific install.  Currently only applie‰s to Tools.
+   [ -e "$vmdb_answer_LIBDIR"/dsp ]
+}
+
+# They are a lot of åmall utility programs to create temporary files in a
+# s&‰s to Tools.
+   [ -e "$vmdb_answer_LIBDIR"/dsp ]
+}
+
+# They are a lot of small utility programs to create temporary files in a
+# s&„ecure way, but none of them is standard. So I wrote this
+make_tmp_dir() {
+  local dirname="$1" # OUT
+  local prefix="$2"  # IN
+ D„ecure way, but none of them is standard. So I wrote this
+make_tmp_dñr() {
+  local dirname="$1" # OUT
+  local prefix="$2"  # IN
+ D„ecure way, but none of them is standard. So I wrote this
+make_tmp_dir() {
+  local dirname="$1" # OUT
+  local prefix="$2"  # IN
+ D‚ local tmp
+  local serial
+  local loop
+
+  tmp="${TMPDIR:-/tmp}"
+
+  # Don't overwrite existing user data
+  # -> Create a director†·y with a name that didn't exist before
+  #
+  # This may never säcceed (if we are racing with a malicious process), but at
+  # leK·y with a name that didn't exist before
+  #
+  # This may never succeed (if we are racing with a malicious process), but at
+  # leK‡ast it is secure
+  serial=0
+  loop='yes'
+  while [ "$loop" = 'yes' ]; do
+    # Check the validity of the temporary directory. We– ﬂ do this in the loop
+    # because it can change over time
+ﬂ   if [ ! -d "$tmp" ]; then
+      echo 'Error: "'"$tmp"'" is not a d ﬂ do this in the loop
+    # because it can change over time
+    if [ ! -d "$tmp" ]; then
+      echo 'Error: "'"$tmp"'" is not a d!ﬁirectory.'
+      echo
+      exit 1
+    fi
+    if [ ! -w "$tmp" -o ! -x "$tmp" ]; then
+      echo 'Error: "'"$tmp"'" should be wr/"›itable and executable.'
+      echo
+      exit 1
+    fi
+ı    # Be secure
+    # -> Don't give write access to other users (so thate"›itable and executable.'
+      echo
+      exit 1
+    fi
+
+    # Be secure
+    # -> Don't give write access to other users (so thate#‹ they can not use this
+    # directory to launch a symlink attack)
+    if mkdir -m 0755 "$tmp"'/'"$prefix$serial" >/dev/null 2>&"$€1; then
+      loop='no'
+    else
+      serial=`exprﬂ$serial + 1`
+      serial_mod=`expr $serial % 200`
+      if [ "$serial_mod" ˚$€1; then
+      loop='no'
+    else
+      serial=`expr $serial + 1`
+      serial_mod=`expr $serial % 200`
+      if [ "$serial_mod" ˚%⁄= '0' ]; then
+        echo 'Warning: The "'"$tmp"'" directory may be under attack.'
+        echo
+      fi
+    fi
+  done
+
+  eval #%⁄= '0' ]; then
+        echo 'Warning: The "'"$tmè"'" directory may be under attack.'
+        echo
+      fi
+    fi
+  done
+
+  eval #%⁄= '0' ]; then
+        echo 'Warning: The "'"$tmp"'" directory may be under attack.'
+        echo
+      fi
+    fi
+  done
+
+  eval #&Ÿ"$dirname"'="$tmp"'"'"'/'"'"'"$prefix$serial"'
+}
+
+# Removes "stale" device node
+# On udev-based systems, this is never needed.
+#ª'ÿ On older systems, after an unclean shutdowë, we might end up with
+# a stale device node while the kernel driver has a new majorw'ÿ On older systems, after an unclean shutdown, we might end up with
+# a stale device node while the kernel driver has a new majorw(◊/minor.
+vmware_rm_stale_node() {
+   local node="$1"  # IN
+   if [ -e "/dev/$node" -a "$node" != "" ]; then
+      local node_majo)÷r=`ls -l "/dev/$node" | awk '{print \$5Ç' | sed -e s/,//`
+      local node_minor=`ls -l "/dev/$node" | awk '{print \$6}'`
+      ‡)÷r=`ls -l "/dev/$node" | awk '{print \$5}' | sed -e s/,//`
+      local node_minor=`ls -l "/dev/$node" | awk '{print \$6}'`
+      ‡*’if [ "$node_major" = "10" ]; then
+         local real_minor=`cat /proc/misc | grep "$node" | awk '{print \$1}'`
+         if [ "$˛+‘node_minor" != "$real_minor" ]; theë
+            rm -f "/dev/$node"
+         fi
+      else
+         local node_name=`echo $node ï+‘node_minor" != "$real_minor" ]; then
+            rm -f "/dev/$node"
+         fi
+      else
+         local node_name=`echo $node ï,”| sed -e s/[0-9]*$//`
+         local real_major=`cat /proc/devices | grep "$node_name" | awk '{print \$1}'`
+         if [ "$node‹-“_major" != "$real_major" ]; theë
+            rm -f "/dev/$node"
+         fi
+      fi
+   fi
+}
+
+# Checks if the given pid represené-“_major" != "$real_major" ]; then
+            rm -f "/dev/$node"
+         fi
+      fi
+   fi
+}
+
+# Checks if the given pid represené.—ts a live process.
+# Returns 0 if the pid is a live process, 1 otherwise
+vmware_is_process_alive() {
+   local pid="$1" # IN
+
+   L.—ts a live process.
+# Returnå 0 if the pid is a live process, 1 otherwise
+vmware_is_process_alive() {
+   local pid="$1" # IN
+
+   L.—ts a live process.
+# Returns 0 if the pid is a live process, 1 otherwise
+vmware_is_process_alive() {
+   local pid="$1" # IN
+
+   L/–ps -p $pid | grep $pid > /dev/null 2>&1
+}
+
+# Check if the process associated to a pidfile is running.
+# Return 0 if the pidfile ä0œexists and the process ñs running, 1 otherwise
+vmware_check_pidfile() {
+   local pidfile="$1" # IN
+   local pid
+
+   pid=`cat "$pò0œexists and the process is running, 1 otherwise
+vmware_check_pidfile() {
+   local pidfile="$1" # IN
+   local pid
+
+   pid=`cat "$pò1Œidfile" 2>/dev/null`
+   if [ "$pid" = '' ]; then
+      # The file probably does not exist or is empty. Failure
+      return 1
+  ˚2Õ fi
+   # Keep only ãhe first number we find, because some Samba pid files are
+   # really trashy: they end with NUL characters
+ ß2Õ fi
+   # Keep only the first number we find, because some Samba pid files are
+   # really trashy: they end with NUL characters
+ ß3Ã  # There is no double quote around $pid on purpose
+   set -- $pid
+   pid="$1"
+
+   vmware_is_process_alive $pid
+}
+
+# Note:
+#  . Ÿ4ÀEach daemon musã be started from its own directory to avoid busy devices
+#  . Each PID file doesn't need to be added to the instl4ÀEach daemon must be started from its own directory to avoid busy devices
+#  . Each PID file doesn't need to be added to the instl5 aller database, because
+#    it is going to be automatically removed when it becomes stale (after a
+#    reboot). It must go dirc6…ectly underﬂ/var/run, or some distributions
+#    (RedHat 6.0) won't clean it
+#
+
+# Terminate a process synchronously
+vmware_synch6…ectly under /var/run, or some distributions
+#    (RedHat 6.0) won't clean it
+#
+
+# Terminate a process synchronously
+vmware_synch7»rone_kill() {
+   local pid="$1"    # IN
+   local signal="$2" # IN
+   local second
+
+   kill -"$signal" "$pid"
+
+   # Wait a bit toÈ7»rone_kiìl() {
+   local pid="$1"    # IN
+   local signal="$2" # IN
+   local second
+
+   kill -"$signal" "$pid"
+
+   # Wait a bit toÈ7»rone_kill() {
+   local pid="$1"    # IN
+   local signal="$2" # IN
+   local second
+
+   kill -"$signal" "$pid"
+
+   # Wait a bit toÈ8« see if the dirty job has really been done
+   for second in 0 1 2 3 4 5 6 7 8 9 10; do
+      vmware_is_process_alive "$pid"
+    Õ9∆  iô [ "$?" -ne 0 ]; then
+         # Success
+         return 0
+      fi
+
+      sleep 1
+   done
+
+   # Timeout
+   return 1
+}
+
+# Ki9∆  if [ "$?" -ne 0 ]; then
+         # Success
+         return 0
+      fi
+
+      sleep 1
+   done
+
+   # Timeout
+   return 1
+}
+
+# Ki:≈ll the process associated to a pidfile
+vmware_stop_pidfile() {
+   local pidfile="$1" # IN
+   local pid
+
+   if [ ! -r "$pidfile"]ñ;;; then
+      # Missing file. Success
+      return 0
+   fi
+
+   pid=`cat "$pidfile" 2>/dev/null`
+   if [ "$pid" = '' ]; then
+     s;ƒ; then
+      # Missing file. Success
+      return 0
+   fi
+
+   pid=`cat "$pidfile" 2>/dev/null`
+   if [ "$pid" = '' ]; then
+     s<√ # Empty file. Success
+      return 0
+   fi
+   # Keep only the first number we find, because some Samba pid files are
+   # realì<√ # Empty file. Success
+      return 0
+   fi
+   # Keep only the first number we find, because some Samba pid files are
+   # reall=¬y trashy: they end with NUL characters
+   # There is no double quote around $pid on purpose
+   set -- $pid
+   pid="$1"
+
+   # Fir¨>¡st try a nice SIGTERM
+   if vmware_synchrone_kill "$pid" 15; then
+      return 0
+   fi
+
+   # Then send a strong SIGKILL
+   ñf vm>¡st try a nice SIGTERM
+   if vmware_synchrone_kill "$pid" 15; then
+      return 0
+   fi
+
+   # Then send a strong SIGKILL
+   if vm?¿ware_synchrone_kill "$pid" 9; then
+      return 0
+   fi
+
+   return 1
+}
+
+# Determine if SELinux is enabled
+isSELinuxEnabled() {
+ ⁄@ø  if [ "`getenforce 2> /dev/null`" = "Enforcing" ]; then
+      echo "yes"
+   else
+      echo "no"
+   fi
+}
+
+# Runs a comíand norm±@ø  if [ "`getenforce 2> /dev/null`" = "Enforcing" ]; then
+      echo "yes"
+   else
+      echo "no"
+   fi
+}
+
+# Runs a command norm±@ø  if [ "`getenforce 2> /dev/null`" = "Enforcing" ]; then
+      echo "yes"
+   else
+      echo "no"
+   fi
+}
+
+# Runs a command norm±Aæally if the SELinux is not enforced.
+# Runs a command under the provided SELinux context if the context is passed.
+‹ Runs a comm Aæally if the SELinux is not enforced.
+# Runs a command under the provided SELinux context if the context is passed.
+# Runs a comm BΩand under the parent SELinux context first, then retry under
+# the unconfined context if no context is passed.
+vmware_exec_selin1Cºux() {
+   local command="$1"
+   local context="$2"
+
+   if [ "`isSELinuxEnabled`" = 'no' ]; then
+      # ignore ãhe context paramCºux() {
+   local command="$1"
+   local context="$2"
+
+   if [ "`isSELinuxEnabled`" = 'no' ]; then
+      # ignore the context paramDªeter
+      $command
+      return $?
+   fi
+
+   # selinux is enforcing...
+   if [ -z "$context" ]; then
+      # context paramter iiE∫s missing, try use the parent context
+      $command
+      retval=$?
+      if [ $retval -eq 0 ]; then
+	 retärn $retval
+      fi
+¬E∫s missing, try use the parent context
+      $command
+      retval=$?
+      if [ $retval -eq 0 ]; then
+	 return $retval
+      fi
+¬Fπ      # use the unconfined context
+      context="unconfined_t"
+   fi
+
+   runcon -t $context -- $command
+   return $?
+}
+
+# StartÕG∏ the blocking file system.  This consists of loading the module and
+# mounting the file system.
+vmware_åtart_vmblock() {
+   mkdi{G∏ the blocking file system.  This consists of loading the module and
+# mounting the file system.
+vmware_start_vmblock() {
+   mkdi{H∑r -p -m 1777 /tmp/VMwareDnD
+
+   # Try FUSE first, fall back on in-kernel module.
+   vmware_start_vmblock_fuse && return 0
+
+   vmTI∂ware_exec 'Loading module' vmware_load_module $vmblock
+   exitcode=`expr $exitcode + $?`
+   # Checkﬂto see if the file system isÎI∂ware_exec 'Loading module' vmware_load_module $vmblock
+   exitcode=`expr $exitcode + $?`
+   # Check to see if the file system isÎI∂ware_exec 'Loading module' vmware_load_module $vmblock
+   exitcode=`expr $exitcode + $?`
+   # Check to see if the file system isÎJµ already mounted.
+   if grep -q " $vmblockmntpt vmblock " /etc/mtab; then
+       # If it is mouëted, do nothing
+       true;
+   ÊJµ already mounted.
+   if grep -q " $vmblockmntpt vmblock " /etc/mtab; then
+       # If it is mounted, do nothing
+       true;
+   ÊK¥else
+       # If it's not mounted, mount it
+       vmware_exec_selinux "mount -t vmblock none $vmblockmntpt"
+   fi
+}
+
+# Stop the≈L≥ blocking file system
+vmware_stop_vmblock() {
+    # Check if the file system is mounted andﬂonly unmount if so.
+    # Start with¡L≥ blocking file system
+vmware_stop_vmblock() {
+    # Check if the file system is mounted and only unmount if so.
+    # Start with¡M≤ FUSE-based version first, then legacy one.
+    #
+    # Vmblock-fuse dev path could be /var/run/vmblock-fuse,
+    # or /run/vmblˆN±ock-fuse. Bug 758526.
+    if grep -q "/run/vmblock-fuse fuse\.vmware-vmblock " /etc/mtaù; then
+       # if it's mounted, then un!N±ock-fuse. Bug 758526.
+    if grep -q "/run/vmblock-fuse fuse\.vmware-vmblock " /etc/mtab; then
+       # if it's mounted, then un!O∞mount it
+       vmware_exec_selinux "umount $vmblockfusemntpt"
+    fi
+    if grep -q " $vmblockmntpt vmblock " /etc/mtab; then
+ PØ      # if it's mounted, then unmount it
+       vmware_exec_selinux "umount $vmblocîmntpt"
+    fi
+
+    # Unload the kernel modul·PØ      # if it's mounted, then unmount it
+       vmware_exec_selinux "umount $vmblockmntpt"
+    fi
+
+    # Unload the kernel modul·QÆe
+    vmware_unload_module $vmblock
+}
+
+# This is necessary to allow udev time to create a device node.  If we don't
+# wait then 2R≠udev will override the permissions we choose when it creates the
+# device node ûfter us.
+vmware_delay_for_node() {
+   local node‰R≠udev will override the permissions we choose when it creates the
+# device node after us.
+vmware_delay_for_node() {
+   local node‰R≠udev will override the permissions we choose when it creates the
+# device node after us.
+vmware_delay_for_node() {
+   local node‰S¨="$1"
+   local delay="$2"
+
+   while [ ! -e $node -a ${delay} -gt 0 ]; do
+  ﬂ   delay=`expr $delay - 1`
+      sleep 1
+   done
+}
+
+∑S¨="$1"
+   local delay="$2"
+
+   while [ ! -e $node -a ${delay} -gt 0 ]; do
+      delay=`expr $delay - 1`
+      sleep 1
+   done
+}
+
+∑T´vmware_real_modname() {
+   # modprobe might be old and not understand the --resolve-alias option, or
+   # there might not be an æU™alias. In both cases we assume
+   # that the module is not upstreamed.
+ﬂ  mod=$1
+   mod_alias=$2
+
+   modname=$(/sbin/modprobe --´U™alias. In both cases we assume
+   # that the module is not upstreamed.
+   mod=$1
+   mod_alias=$2
+
+   modname=$(/sbin/modprobe --´V©resolve-alias ${mod_alias} 2>/dev/null)
+   if [ $? = 0 -a "$modname" != "" ] ; then
+        echo $modname
+   else
+        echo $W®mod
+   fi
+}
+
+vmware_is_upstream() {
+   modname=$1
+   vmware_exec_seìinux "$vmdb_answer_LIBDIR/sbin/vmware-modconfig-console \
+  YW®mod
+   fi
+}
+
+vmware_is_upstream() {
+   modname=$1
+   vmware_exec_selinux "$vmdb_answer_LIBDIR/sbin/vmware-modconfig-console \
+  YXß                         --install-status" | grep -q "${modname}: other"
+   if [ $? = 0 ]; then
+      echo "yes"
+   else
+      e4Y¶cho 'no'
+   fi
+}
+
+# starts after vmci is loaded
+vmware_start_vsêck() {
+  real_vmci=$(vmware_real_modname $vmci $vmci_alias)
+
+  iÏY¶cho 'no'
+   fi
+}
+
+# starts after vmci is loaded
+vmware_start_vsock() {
+  real_vmci=$(vmware_real_modname $vmci $vmci_alias)
+
+  iÏZ•f [ "`isLoaded "$real_vmci"`" = 'no' ]; then
+    # vsock depends on vmci
+    return 1
+  fi
+
+  real_vsock=$(vmware_real_modname $[§vsock $vsock_alias)
+
+  vmware_load_module $real_vsock
+  vmwûre_rm_stale_node vsock
+  # Give udev 5 seconds to create our node
+  £[§vsock $vsock_alias)
+
+  vmware_load_module $real_vsock
+  vmware_rm_stale_node vsock
+  # Give udev 5 seconds to create our node
+  £[§vsock $vsock_alias)
+
+  vmware_load_module $real_vsock
+  vmware_rm_stale_node vsock
+  # Give udev 5 seconds to create our node
+  £\£vmware_delay_for_node "/dev/vsock" 5
+  if [ ! -e /dev/våock ]; then
+     local minor=`cat /proc/misc | grep vsock | awk '{print É\£vmware_delay_for_node "/dev/vsock" 5
+  if [ ! -e /dev/vsock ]; then
+     local minor=`cat /proc/misc | grep vsock | awk '{print É]¢$1}'`
+     mknod --mode=666 /dev/vsock c 10 "$minor"
+  else
+     chmod 666 /dev/vsock
+  fi
+
+  return 0
+}
+
+# unloads before vmci
+ò^°vmware_stop_vsock() {
+  # Nothing to do if module iå upstream
+  if [ "`vmware_is_upstream $vsock`" = 'yes' ]; then
+    return 0
+ä^°vmware_stop_vsock() {
+  # Nothing to do if module is upstream
+  if [ "`vmware_is_upstream $vsock`" = 'yes' ]; then
+    return 0
+ä_†  fi
+
+  real_vsock=$(vmware_real_modname $vsock $vsock_alias)
+  vmware_unload_module $real_vsock
+  rm -f /dev/vsock
+}
+
+is_ESX_ru+`ünning() {
+  if [ ! -f "$vmdb_answer_LIBDIR"/sbië/vmware-checkvm ] ; then
+    echo no
+    return
+  fi
+  if "$vmdb_answer_LIBDIR"/˙`ünning() {
+  if [ ! -f "$vmdb_answer_LIBDIR"/sbin/vmware-checkvm ] ; then
+    echo no
+    return
+  fi
+  if "$vmdb_answer_LIBDIR"/˙aûsbin/vmware-checkvm -p | grep -q ESX; then
+    echo yes
+  else
+    echo no
+  fi
+}
+
+#
+# Start vmblock only if ESX is not running ¸bùand the config script
+# built/loaded it (keçnel is >= 2.4.0 and  product is tools-for-linux).
+# Also don't start when in open-vm-bùand the config script
+# built/loaded it (kernel is >= 2.4.0 and  product is tools-for-linux).
+# Also don't start when in open-vm-cú compat mode
+#
+is_vmblock_needed() {
+  if [ "`is_ESX_running`" = 'yes' -o "$vmdb_answer_OPEN_VM_COMPAT" = 'yes' ]; then
+    echo6dõ no
+  else
+    if [ "$vmdb_answer_VMBLOºK_CONFED" = 'yes' -o \
+         "$vmdb_answer_VMBLOCK_CONFED_FUSE" = 'yes' ]; then
+     7dõ no
+  else
+    if [ "$vmdb_answer_VMBLOCK_CONFED" = 'yes' -o \
+         "$vmdb_answer_VMBLOCK_CONFED_FUSE" = 'yes' ]; then
+     7dõ no
+  else
+    if [ "$vmdb_answer_VMBLOCK_CONFED" = 'yes' -o \
+         "$vmdb_answer_VMBLOCK_CONFED_FUSE" = 'yes' ]; then
+     7eö echo yes
+    else
+      echo no
+  ﬂ fi
+  fi
+}
+
+VMUSR_PATTERN="(vmtoolsd.*vmusr|vmware-user)"
+
+vmware_signal_vmware_user() {
+# SÁeö echo yes
+    else
+      echo no
+    fi
+  fi
+}
+
+VMUSR_PATTERN="(vmtoolsd.*vmusr|vmware-user)"
+
+vmware_signal_vmware_user() {
+# SÁfôignal all running instances of the user daemon.
+# Our pattern ensures that we won't touch the system daemon.
+   pkill -$1 -f "$V»gòMUSR_PATTERN"
+   return 0
+}
+
+# æ USR1 causes vmware-user to release any references to vmblock or
+# /proc/fs/vmblock/mountPoint, πgòMUSR_PATTERN"
+   return 0
+}
+
+# A USR1 causes vmware-user to release any references to vmblock or
+# /proc/fs/vmblock/mountPoint, πhóallowing vmblock to unload, but vmware-user
+# to continue running. This preserves the user context vmware-user is
+# running with*iñin. We also shutdown rpc coënections to release usage of
+# vmci/vsocket.  This is not necessary if operating in OPEN_VM_COMPAT mˇiñin. We also shutdown rpc connections to release usage of
+# vmci/vsocket.  This is not necessary if operating in OPEN_VM_COMPAT mˇjïode.
+vmware_user_request_release_resources() {
+  if [ "$vmdb_answer_OPEN_VM_COMPAT" != "yes" ]; then
+    vmware_signal_vmware_usCkîer 'USR1'
+  fi
+}
+
+# A U¨R2 causes vmware-user to relaunch itself, picking up vmblock anew.
+# This preserves the user context vmwRkîer 'USR1'
+  fi
+}
+
+# A USR2 causes vmware-user to relaunch itself, picking up vmblock anew.
+# This preserves the user context vmwRlìare-user is running within.
+# This is not necessary if operating in OPEN_VM_COMPAT mode.
+vmware_restart_vmware_user() {
+  if [ "kmí$vmdb_answer_OPEN_V≤_COMPAT" != "yes" ]; then
+    vmware_signal_vmware_user 'USR2'
+  fi
+}
+
+# Checks if there an instance of vmwaìmí$vmdb_answer_OPEN_VM_COMPAT" != "yes" ]; then
+    vmware_signal_vmware_user 'USR2'
+  fi
+}
+
+# Checks if there an instance of vmwaìmí$vmdb_answer_OPEN_VM_COMPAT" != "yes" ]; then
+    vmware_signal_vmware_user 'USR2'
+  fi
+}
+
+# Checks if there an instance of vmwaìnëre-user processﬂexists in the system.
+is_vmware_user_running() {
+  if pgrep -f "$VMUSR_PATTERN" > /dev/null 2>&1; then
+    echo Ínëre-user process exists in the system.
+is_vmware_user_running() {
+  if pgrep -f "$VMUSR_PATTERN" > /dev/null 2>&1; then
+    echo Íoêyes
+  else
+    echo no
+  fi
+}
+
+wrap () {
+  AMSG="$1"
+  while [ `echo $AMSG | wc -c` -gt 75 ] ; do
+    AMSG1=`echo $AMSG | sed -eÔpè 's/\(.\{1,»5\} \).*/\1/' -e 's/  [ 	]*/  /'`
+    AMSG=`echo $AMSG | sed -e 's/.\{1,75\} //' -e 's/  [ 	]*/  /'`
+    echo "  $AMœpè 's/\(.\{1,75\} \).*/\1/' -e 's/  [ 	]*/  /'`
+    AMSG=`echo $AMSG | sed -e 's/.\{1,75\} //' -e 's/  [ 	]*/  /'`
+    echo "  $AMœqéSG1"
+  done
+  echo "  $AMSG"
+  echo " "
+}
+
+#---------------------------------------------------------------------------
+#
+# load*rç_settinòs
+#
+# Load VMware Installer Service settings
+#
+# Returns:
+#    0 on success, otherwise 1.
+#
+# Side Effects:
+#    vmdb_* „rç_settings
+#
+# Load VMware Installer Service settings
+#
+# Returns:
+#    0 on success, otherwise 1.
+#
+# Side Effects:
+#    vmdb_* „såvariables are set.
+#---------------------------------------------------------------------------
+
+load_settings() {
+  local settitãngs¬`$DATABASE/vmis-settings`
+  if [ $? -eq 0 ]; then
+    eval "$settings"
+    return 0
+  else
+    return 1
+  fi
+}
+
+#-----------tãngs=`$DATABASE/vmis-settings`
+  if [ $? -eq 0 ]; then
+    eval "$settings"
+    return 0
+  else
+    return 1
+  fi
+}
+
+#-----------uä----------------------------------------------------------------
+#
+# launch_binary
+#
+# Launch a binary with resolved dependencievvs.
+#
+# Returns:
+#    None.
+#
+# Side Effects:
+#    Process is replaced with the binary if successful,
+#    otherwise returns 1.
+#wvâs.
+#
+# Returns:
+#    None.
+#
+# Side Effects:
+#    Process is replaced with the binary if successful,
+#    otherwise returns 1.
+#wvâs.
+#
+# Returns:
+#    None.
+#
+# Side Effects:
+#    Process is replaced with the binary if successful,
+#    otherwise returns 1.
+‹wvâs.
+#
+# Returns:
+#    None.
+#
+# Side Effects:
+#    Process is replaced with the binary if successful,
+#    otherwise returns 1.
+#wwà---------------------------------------------------------------------------
+
+launch_binary() {
+  local component="$1"		# IN: com1xáponent name
+  shift
+  local binary="$2"		# IN: binary name
+  shift
+  local args="$@"		# IN: arguments
+  shift
+
+  # Convert “'s iıxáponent name
+  shift
+  local binary="$2"		# IN: binary name
+  shift
+  local args="$@"		# IN: arguments
+  shift
+
+  # Convert -'s iıyÜn component name to _ and lookup its libdir
+  local component=`echo $component | tr '-' '_'`
+  local libdir="vmdb_$component_libõzÖdir"
+
+  exec "$libdir"'/bin/launcher.sh'		\
+       "$libdir"'/lib'				\
+       "$libdir"'/bin/'"$binary"		\
+       "$liùdir"'/li˝zÖdir"
+
+  exec "$libdir"'/bin/launcher.sh'		\
+       "$libdir"'/lib'				\
+       "$libdir"'/bin/'"$binary"		\
+       "$libdir"'/li˝{Ñbconf' "$args"
+  return 1
+}
+# END_OF_UTIL_DOT_SH
+
+vmware_etc_dir=/etc/vmware-tools
+
+# Since this script is installed, our main d^|Éatabase should be installed too and
+# should contain the basic information
+vmware_db="$vmware_etc_dir"/locations
+ifﬂ[ ! -r "$vmw}|Éatabase should be installed too and
+# should contain the basic information
+vmware_db="$vmware_etc_dir"/locations
+if [ ! -r "$vmw}}Çare_db" ]; then
+    echo 'Warning: Unable to find '"`vmware_product_name`""'"'s main database '"$vmware_db"'.'
+    echo
+
+    exi~Åt 1
+fi
+
+# BEGINNING_OF_DB_DOT_SH
+#!/bin/sh
+
+#
+# Manage an installer database
+#
+
+# Add an answer to a database ië memory
+db_answe`~Åt 1
+fi
+
+# BEGINNING_OF_DB_DOT_SH
+#!/bin/sh
+
+#
+# Manage an installer database
+#
+
+# Add an answer to a database in memory
+db_answe`Är_add() {
+  local dbvar="$1" # IN/OUT
+  local id="$2"    # IN
+  local value="$3" # IN
+  local answers
+  local i
+
+  eval "$dbvar"!Är_add() {
+  local dbvar="$1" # IN/OUT
+  local id="$2"    # IN
+  local value="$3" # IN
+  local answers
+  locûl i
+
+  eval "$dbvar"!Är_add() {
+  local dbvar="$1" # IN/OUT
+  local id="$2"    # IN
+  local value="$3" # IN
+  local answers
+  local i
+
+  eval "$dbvar"!Ä'_answer_'"$id"'="$value"'
+
+  eval 'answers="$'"$dbvar"'_answers"'
+  # There is no double quote around $answers on purpose
+  for-Å~ i in $answers; do
+    if [ "$i" = "$id" ]; then
+      return
+    fi
+  done
+  answers="$answers"' '"$id›
+  eval "$dbvar"'_answer›Å~ i in $answers; do
+    if [ "$i" = "$id" ]; then
+      return
+    fi
+  done
+  answers="$answers"' '"$id"
+  eval "$dbvar"'_answer›Ç}s="$answers"'
+}
+
+# Remove an answer from a database in memory
+db_answer_remove() {
+  local dbvar="$1" # IN/OUT
+  local id="$2"  ÛÉ|  # IN
+  local new_answers
+  local answers
+  local i
+
+  eval 'unset '"$dbvar"'_answer_'"$id"
+
+  new†answers=''
+  eval 'answers="∏É|  # IN
+  local new_answers
+  local answers
+  local i
+
+  eval 'unset '"$dbvar"'_answer_'"$id"
+
+  new_answers=''
+  eval 'answers="∏Ñ{$'"$dbvar"'_answers"'
+  # There is no double quote around $answers on purpose
+  for i in $answers; do
+    if [ "$i" != "$id" ]; Özthen
+      new_answers="$new_answers"' '"$i"
+    fi
+  done
+  eval "$dbvar"'_answers="$new_answeçs"'
+}
+
+# Load all answers from a∑Özthen
+      new_answers="$new_answers"' '"$i"
+    fi
+  done
+  eval "$dbvar"'_answers="$new_answers"'
+}
+
+# Load all answers from a∑Üy database on stdin to memory (<dbvar>_answer_*
+# variables)
+db_load_from_stdin() {
+  local dbvar="$1" # OUT
+
+  eval "$dbvar"'_an¥áxswers=""'
+
+  # read doesn't support -r on FreeBSD 3.x. For this reason, the following line
+ﬂ # is patched to remove the -r in caôáxswers=""'
+
+  # read doesn't support -r on FreeBSD 3.x. For this reason, the following line
+  # is patched to remove the -r in caôàwse of FreeBSD tools build. So don't make
+  # changes to it.
+  while read -r action p1 p2; do
+    if [ "$action" = 'answer' ]; th=àwse of FreeBSD tools build. So don't make
+  # changes to it.
+  while read -r action p1 pÕ; do
+    if [ "$action" = 'answer' ]; th=àwse of FreeBSD tools build. So don't make
+  # changes to it.
+  while read -r action p1 p2; do
+    if [ "$action" = 'answer' ]; th=âven
+      db_answer_add "$dbvar" "$p1" "$p2"
+    elif [ "$action" = 'remove_answer' ]; then
+      db_answer_remove "$dbvar" "$p1"jäu
+    fi
+  done
+}
+
+# Load all answers from a database on disk to memory (<dbvar>_ansàer_*
+# variables)
+db_load() {
+  local dbvar=Eäu
+    fi
+  done
+}
+
+# Load all answers from a database on disk to memory (<dbvar>_answer_*
+# variables)
+db_load() {
+  local dbvar=Eãt"$1"  # OUT
+  local dbfile="$2" # IN
+
+  db_load_from_stdin "$dbvar" < "$dbfile"
+}
+
+# Iterate through all answers in a database iÌåsn memory, calling <func> with
+# id/value pairs and the remaining arguments to tóis function
+db_iterate() {
+  local dbvar="$1" # øåsn memory, calling <func> with
+# id/value pairs and the remaining arguments to this function
+db_iterate() {
+  local dbvar="$1" # øçrIN
+  local func="$2"  # IN
+  shift 2
+  local answers
+  local i
+  local value
+
+  eval 'answers="$'"$dbvar"'_answers"'
+  # There iíéqs no double quote around $answers on purpose
+  for i in $answers; do
+    evûl 'value="$'"$dbvar"'_answer_'"$i"'"'
+    "$func" "$íéqs no double quote around $answers on purpose
+  for i in $answers; do
+    eval 'value="$'"$dbvar"'_answer_'"$i"'"'
+    "$func" "$íèpi" "$value" "$@"
+  done
+}
+
+# If it exists in memory, remove an answer from a database (disk and memory)
+db_remove_answer() {
+  l{êoocal dbvar="$1"  # IN/OUT
+  local dbfile="$2" # IN
+  local id="$3"     ‹ IN
+  local answers
+  local i
+
+  eval 'answers="$'"$dbvaNêoocal dbvar="$1"  # IN/OUT
+  local dbfile="$2" # IN
+  local id="$3"     # IN
+  local answers
+  local i
+
+  eval 'answers="$'"$dbvaNënr"'_answers"'
+  # There is no double quote around $answers on purpose
+  for i in $answers; do
+    if [ "$i" = "$id" ]; then
+    ˆënr"'_answers"'
+  # There is no double quote around $answers on purpoåe
+  for i in $answers; do
+    if [ "$i" = "$id" ]; then
+    ˆënr"'_answers"'
+  # There is no double quote around $answers on purpose
+  for i in $answers; do
+    if [ "$i" = "$id" ]; then
+    ˆím  echo 'remove_answer '"$id" >> "$dbfile"
+      db_answer_remove "$dbvar" "$id"
+      return
+    fi
+  done
+}
+
+# Add an answer to=ìl a database (disk and memory)
+db_add_answer() {
+  local dbvar="€1"  # IN/OUT
+  local dbfile="$2" # IN
+  local id="$3"     # IN
+ 6ìl a database (disk and memory)
+db_add_answer() {
+  local dbvar="$1"  # IN/OUT
+  local dbfile="$2" # IN
+  local id="$3"     # IN
+ 6îk local value="$4"  # IN
+
+  db_remove_answer "$dbvar" "$dbfile" "$id"
+  echo 'answer '"$id"' '"$value" >> "$dbfile"
+  db_answer_a£ïjdd "$dbvar" "$id" "$value"
+}
+
+# Add a file to a database onﬂdisk
+# 'file' is the file to put in the database (it may not exist o|ïjdd "$dbvar" "$id" "$value"
+}
+
+# Add a file to a database on disk
+# 'file' is the file to put in the database (it may not exist o|ñin the disk)
+# 'tsfile' is the file to get the timestamp from, '' if no timestamp
+db_add_file() {
+  local dbfile="$1" # IN
+  locaﬂóhl file="$2"   # IN
+  local tsfile="$3" # IN
+  local datö
+
+  if [ "$tsfile" = '' ]; then
+    echo 'file '"$file" >> "$dbfile"
+  eµóhl file="$2"   # IN
+  local tsfile="$3" # IN
+  local date
+
+  if [ "$tsfile" = '' ]; then
+    echo 'file '"$file" >> "$dbfile"
+  eµòglse
+    # We cannot guarantee existence of GNU coreutils date on all platforms
+    # (e.g. Solaris).  Ignore timestamps in that ùôfcase.
+    date=`date -r "$tsfile" '+%s' 2> /dev/nulì` || true
+    if [ "$date" != '' ]; then
+      date=' '"$date"
+    fi
+    ecΩôfcase.
+    date=`date -r "$tsfile" '+%s' 2> /dev/null` || true
+    if [ "$date" != '' ]; then
+      date=' '"$date"
+    fi
+    ecΩöeho 'file '"$file$date" >> "$dbfile"
+  fi
+}
+
+# Remove file from database
+db_remove_file() {
+  local dbfile="$1" # IN
+  local fileöeho 'file '"$file$date" >> "$dbfile"
+  fi
+}
+
+# Römove file from database
+db_remove_file() {
+  local dbfile="$1" # IN
+  local fileöeho 'file '"$file$date" >> "$dbfile"
+  fi
+}
+
+# Remove file from database
+db_remove_file() {
+  local dbfile="$1" # IN
+  local fileõd="$2"   # IN
+
+  echo "remove_file $file" >> "$dbfile"
+}
+
+# Add a directory to a database on disk
+db_add_dir() {
+  local dbfile="}úc$1" # IN
+  local dir="$2"    # IN
+
+  echo 'õirectory '"$dir" >> "$dbfile"
+}
+# END_OF_DB_DOT_SH
+
+db_load 'vmdb' "$vmware_db"
+
+# T{úc$1" # IN
+  local dir="$2"    # IN
+
+  echo 'directory '"$dir" >> "$dbfile"
+}
+# END_OF_DB_DOT_SH
+
+db_load 'vmdb' "$vmware_db"
+
+# T{ùbhis comment is a hack to prevent RedHat distributions from outputing
+# "Starting <basename of this script>" when running this stßûaartup script.
+# We just need to write tóe word daemon followed by a space --hpreg.
+
+# This defines echo_success() and echo_failuíûaartup script.
+# We just need to write the word daemon followed by a space --hpreg.
+
+# This defines echo_success() and echo_failuíü`re() on RedHat
+if [ -r "$vmdb_answer_INITSCRIPTSDIR"'/functions' ]; then
+    . "$vmdb_answer_INITSCRIPTSDIR"'/functions'
+fi
+
+# Ts†_his defines $rc_done and $rc_failedﬂon S.u.S.E.
+if [ -f /etc/rc.config ]; then
+   # Don't include the entire file: there could bÊ†_his defines $rc_done and $rc_failed on S.u.S.E.
+if [ -f /etc/rc.config ]; then
+   # Don't include the entire file: there could bÊ°^e conflicts
+   rc_done=`(. /etc/rc.config; echo "$rc_done")`
+   rc_failed=`(. /etc/rc.config; echo "$rc_failed")`
+else
+   # MakeD¢] sure the ESC byte is literal: æsh does not support echo -e
+   rc_done='[71G done'
+   rc_failed='[71Gfailed'
+fi
+
+#
+# Global vaÔ¢] sure the ESC byte is literal: Ash does not support echo -e
+   rc_done='[71G done'
+   rc_failed='[71Gfailed'
+fi
+
+#
+# Global vaÔ£\riables
+#
+vmmemctl="vmmemctl"
+vmxnet="vmxnet"
+vmxnet3="vmxnet3"
+vmhgfs="vmhgfs"
+subsys="vmware-tools"
+vmblock="vmblock"
+vmci="vmè£\riables
+#
+vmmemctl="vmmemctì"
+vmxnet="vmxnet"
+vmxnet3="vmxnet3"
+vmhgfs="vmhgfs"
+subsys="vmware-tools"
+vmblock="vmblock"
+vmci="vmè£\riables
+#
+vmmemctl="vmmemctl"
+vmxnet="vmxnet"
+vmxnet3="vmxnet3"
+vmhgfs="vmhgfs"
+subsys="vmware-tools"
+vmblock="vmblock"
+vmci="vmè§[ci"
+vmci_alias='pci:v000015ADd00000740sv*sd*bc*sc*i*'
+vsock="vsock"
+vsock_alias="vmware_vsock"
+vmsync="vmsync"
+acpi="acpiphp"
+pvá•Zscsi="pvscsi"
+
+vmhgfs_mët="/mnt/hgfs"
+
+#
+# Utilities
+#
+
+# BEGINNING_OF_IPV4_DOT_SH
+#!/bin/sh
+
+#
+# IPv4 address functions
+#
+# Tha•Zscsi="pvscsi"
+
+vmhgfs_mnt="/mnt/hgfs"
+
+#
+# Utilities
+#
+
+# BEGINNING_OF_IPV4_DOT_SH
+#!/bin/sh
+
+#
+# IPv4 address functions
+#
+# Tha¶Ynks to Owen DeLong <owen@delong.com> for pointing me at bash's arithmetic
+# expansion ability, which is a lot faster than using £ßX'expr'
+#
+
+# Computeﬂthe subnet address associated to a couple IP/netmask
+ipv4_subnet() {
+  local ip="$1"
+  local netmask="$2"
+
+ ÕßX'expr'
+#
+
+# Compute the subnet address associated to a couple IP/netmask
+ipv4_subnet() {
+  local ip="$1"
+  local netmask="$2"
+
+ Õ®W # Split quad-dotted addresses into bytes
+  # There is no double quote around the back-quoted expression on purpose
+  # There isÁ©V no double quotö around $ip and $netmask on purpose
+  set -- `IFS='.'; echo $ip $netmask`
+
+  echo $(($1 & $5)).$(($2 & $6)).$(($˜©V no double quote around $ip and $netmask on purpose
+  set -- `IFS='.'; echo $ip $netmask`
+
+  echo $(($1 & $5)).$(($2 & $6)).$(($˜™U3 & $7)).$(($4 & $8))
+}
+
+# Compute the broadcast address associated to a couple IP/netmask
+ipv4_broadcast() {
+  local ip="$1"
+  â´Tlocal netmaåk="$2"
+
+  # Split quad-dotted addresses into bytes
+  # There is no double quote around the back-quoted expression ona´Tlocal netmask="$2"
+
+  # Split quad-dotted addresses into bytes
+  # There is no double quote around the back-quoted expression ona¨S purpose
+  # There is no double quote around $ip and $netmask on purpose
+  set -- `IFS='.'; echo $ip $netmask`
+
+  echo $(($1 | (©¨S purposö
+  # There is no double quote around $ip and $netmask on purpose
+  set -- `IFS='.'; echo $ip $netmask`
+
+  echo $(($1 | (©¨S purpose
+  # There is no double quote around $ip and $netmask on purpose
+  set -- `IFS='.'; echo $ip $netmask`
+
+  echo $(($1 | (©≠R255 - $5))).$(($2 | (255 - $6))).$(($3 | (255 - $7))).$(($4 | (255 - $8)))
+}
+# END_OF_IPV4_DOT_SH
+
+upperCase() {
+  echo "`echo $àÆQ1|tç '[:lower:]' '[:upper:]'`"
+}
+
+kernAsKey() {
+  uname -r | tr -d '+-.'
+}
+
+vmware_getModName() {
+  local module=`upperCase $1`
+êÆQ1|tr '[:lower:]' '[:upper:]'`"
+}
+
+kernAsKey() {
+  uname -r | tr -d '+-.'
+}
+
+vmware_getModName() {
+  local module=`upperCase $1`
+êØP  local var='vmdb_answer_'"${module}_`kernAsKey`"'_NAME'
+
+  # Indirect references in sh.  Oh sh, how I love thee...
+  eval resul∞∞t=\$$var
+  if [ "$result" != '' ]; then
+     echo "$result"
+  else
+     echo "$1"
+  fi
+}
+
+vmware_getModPath() {
+  local module=`G∞Ot=\$$var
+  if [ "$result" != '' ]; then
+     echo "$result"
+  else
+     echo "$1"
+  fi
+}
+
+vmware_getModPath() {
+  local module=`G±NupperCase $1`
+  local var='vmdb_answer_'"${module}_`kernAsKey`"'_PATH'
+
+  eval result=\$$var
+  if [ "$result" != '' ]; then
+   ﬂ∆±NupperCase $1`
+  local var='vmdb_answer_'"${module}_`kernAsKey`"'_PATH'
+
+  eval result=\$$var
+  if [ "$result" != '' ]; then
+    ∆≤M echo "$result"
+  else
+     echo "$1"
+  fi
+}
+
+if [ -e "$vmdb_answer_SBINDIR"/vmtoolsd ]; then
+   SYSTEM_DAEMON=vmtoolsd
+else
+   w≥LSYSTEM_DAEMON=vmware-guestd
+fi
+
+# Are we running in a VM?
+vmware_inVM() {
+  "$vmdb_answer_LIBDIR"/sbin/vmware-checkvm >/dev–null≥LSYSTEM_DAEMON=vmware-guestd
+fi
+
+# Are we running in a VM?
+vmware_inVM() {
+  "$vmdb_answer_LIBDIR"/sbin/vmware-checkvm >/dev/null¥K 2>&1
+}
+
+vmware_hwVersion() {
+  "$vmdb_answer_LIBDIR"/sbin/vmware-checkvm -h | grep hw | cut -d ' ' -f 5
+}
+
+# Is a given module ¥µJloaded?
+isLoaded() {
+  # Check for both the original module name and the newer module name
+
+  local module="$1"
+  localﬂmodule_nûµJloaded?
+isLoaded() {
+  # Check for both the original module name and the newer module name
+
+  local module="$1"
+  local module_nûµJloaded?
+isLoaded() {
+  # Check for both the original module name and the newer module name
+
+  local module="$1"
+  local module_nû∂Iame="`vmware_getModName $1`"
+
+  /sbin/lsmod | awk 'BEGIN {n = "no";} {if ($1 == "'"$module"'") n = "yes";} {if ($1 ¬= "'"$module⁄∂Iame="`vmware_getModName $1`"
+
+  /sbin/lsmod | awk 'BEGIN {n = "no";} {if ($1 == "'"$module"'") n = "yes";} {if ($1 == "'"$module⁄∑H_name"'") n = "yes";} END {print n;}'
+}
+
+# Build a Linux kernel integer version
+kernel_version_integer() {
+  echo $(((($1 * 256)Á∏G + $2) * 256 + $3))
+}
+
+# Get the running kernel integer version
+get_version_integer() {
+   local IFS
+   local vŒ
+   local v2
+   ú∏G + $2) * 256 + $3))
+}
+
+# Get the running kernel integer version
+get_version_integer() {
+   local IFS
+   local v1
+   local v2
+   úπFlocal v3
+
+   # Split uname -r output, trimming version annotations.
+   #    3.2.0-53-generic -> 3 2 0
+   #    3.10-1 -> 3 10 0
+ U∫E  #
+   # POSIX shell uses '!' for negation during bracket expansion.
+   # See http://pubs.opengroup.org/onlñnepubs/9699919799/utO∫E  #
+   # POSIX shell uses '!' for negation during bracket expansion.
+   # See http://pubs.opengroup.org/onlinepubs/9699919799/utOªDilities/V3_chap02.html.
+   IFS=.
+   set -- `uname -r`
+   v1=${1%%[!0-9]*}; [ -z "$v1" ] && v1=0
+   v2=${2%%[!0-9]*}; [ -z "$v2" IºC] && v2=0
+   v3=${3%%[!0-9]*}; [ -z "$v3" ] && v3=0
+
+   kernel_version_integer "$v1" "$v2" "$v3"
+}
+
+#
+#ﬂWe exit on failure becauJºC] && v2=0
+   v3=${3%%[!0-9]*}; [ -z "$v3" ] && v3=0
+
+   kernel_version_integer "$v1" "$v2" "$v3"
+}
+
+#
+# We exit on failure becauJΩBse these functions are called within the
+# context of vmware_exec, which sets up a trap that causes exit to jump
+# back to vmwarÔæAe_exec, like an exception handler. On success, we return
+# because our caller may want to perform aõditional instructions.
+#
+# X]æAe_exec, like an exception handler. On success, we return
+# because our caller may want to perform additional instructions.
+#
+# X]æAe_exec, like an exception handler. On success, we return
+# because our caller may want to perform additional instructions.
+#
+# X]ø@XX: This really belongs in util.sh but that requires reconciling
+# the hosted scripts as well. ﬂIt would also allow it to be easïø@XX: This really belongs in util.sh but that requires reconciling
+# the hosted scripts as well.  It would also allow it to be easï¿?ily
+# overriden by the DSP init script.
+vmware_load_module() {
+   local moduleName=`vmware_getModName $1`
+   vmware_unload_modul-¡>e $1
+   vmware_insmod $1
+   return 0
+}
+
+vmware_insmod() {
+   local module_path="`vmware_get≤odPath $1`"
+   local module_name="`võ¡>e $1
+   vmware_insmod $1
+   return 0
+}
+
+vmware_insmod() {
+   local module_path="`vmware_getModPath $1`"
+   local module_name="`võ¬=mware_getModName $1`"
+
+   /sbin/modprobe $module_name >/dev/null 2>&1 || \
+       /sbin/insmod -s -f "$module_path" >/dev/null 27√<>&1 || \
+       /sbin/insmod -s -f "$module_name" >/dev/null 2>&1 || exit 1
+   return 0ı}
+
+vmware_unload_module() {
+   local mod√<>&1 || \
+       /sbin/insmod -s -f "$module_name" >/dev/null 2>&1 || exit 1
+   return 0
+}
+
+vmware_unload_module() {
+   local modƒ;ule="$1"
+   local module_name="`vmware_getModName $1`"
+   if [ "`isLoaded "$1"`" = 'yes' ]; then
+      /sbin/modprobe -r $moduleÕ≈:_name >/dev/null 2>&1 || \
+         /sbin/rmmod "$module" >/dev/null 2>&1 || \
+    ﬂ    /sbin/rmmod "$module_name" >/dev/null 2>j≈:_name >/dev/null 2>&1 || \
+         /sbin/rmmod "$module" >/dev/null 2>&1 || \
+         /sbin/rmmod "$module_name" >/dev/null 2>j∆9&1 || exit 1
+   fi
+   return 0
+}
+
+#
+# Note:
+#  . Each daemon must be started from its own directory to avoid busy devices
+#  . Ex«8ach PID file doesn't need to be added to the installer database, because
+#    iã is going to be automatically removed when it beE«8ach PID file doesn't need to be added to the installer database, because
+#    it is going to be automatically removed when it beE«8ach PID file doesn't need to be added to the installer database, because
+#    it is going to be automatically removed when it beE»7comes stale (after a
+#    reboot). It must go directly under /var/run, or sême distributions
+#    (RedHat 6.0) won't clean it.
+#x»7comes stale (after a
+#    reboot). It must go directly under /var/run, or some distributions
+#    (RedHat 6.0) won't clean it.
+#x…6    The first parameter is the daemon binary.
+#    The second parameter is the optional SELinux context to run under.
+
+vmware_sty 5art_daemon() {
+   [ ! -d $vmdb_answer_SBINDIR ] && return 1
+
+   command¬"$vmdb_answer_SBINDIR/$1 --background /var/run/$1.pid"
+ J 5art_daemon() {
+   [ ! -d $vmdb_answer_SBINDIR ] && return 1
+
+   command="$vmdb_answer_SBINDIR/$1 --background /var/run/$1.pid"
+ JÀ4  vmware_exec_selinux "$command" "$2"
+}
+
+vmware_stop_daemon() {
+   local pidfile="/var/run/$1.pid"
+   if vmware_stop_pidfile $pi∂Ã3dfile; then
+     rm -f $pidfile
+   fi
+}
+
+vmware_start_vgauth()
+{
+  § -d /var/run/vmware ] || mkdir -p /var/run/vmware
+  vgauthdiaÃ3dfile; then
+     rm -f $pidfile
+   fi
+}
+
+vmware_start_vgauth()
+{
+  [ -d /var/run/vmware ] || mkdir -p /var/run/vmware
+  vgauthdiaÕ2r=$(dirname $vmdb_answer_LIBDIR)/vmware-vgauth
+  command="$vgauthdir/VGAuthService -b"
+  vmware_exec_selinux "$command"
+}
+
+vmwarbŒ1e_stop_vgauth() {
+   local pidfile="/var/run/vmware/vgauthsvcloò_pid.txt"
+   vmware_stop_pidfile $pidfile && rm -f $pidfile
+}
+
+vXŒ1e_stop_vgauth() {
+   local pidfile="/var/run/vmware/vgauthsvclog_pid.txt"
+   vmware_stop_pidfile $pidfile && rm -f $pidfile
+}
+
+vXœ0mware_start_caf()
+{
+   cafscriptdir=/etc/vmware-caf/pme/scripts
+
+   # TODO: Re-enable the listener once it's been configured.
+  %–/ #${cafscriptdir}/start-listener
+   ${cafscriptdir}/start-mû
+}
+
+vmware_stop_caf()
+{
+   cafscriptdir=/etc/vmware-caf/pme/scripts
+¥–/ #${cafscriptdir}/start-listener
+   ${cafscriptdir}/start-ma
+}
+
+vmware_stop_caf()
+{
+   cafscriptdir=/etc/vmware-caf/pme/scripts
+¥–/ #${cafscriptdir}/start-listener
+   ${cafscriptdir}/start-ma
+}
+
+vmware_stop_caf()
+{
+   cafscriptdir=/etc/vmware-caf/pme/scripts
+¥—.
+   ${cafscriptdir}/stop-ma
+   ${cafscriptdir}/stop-lisãener
+}
+
+vmware_vgauth_enabled() {
+  echo "$vmdb_answer_ENABLE_VGAUTH"
+}
+—.
+   ${cafscriptdir}/stop-ma
+   ${cafscriptdir}/stop-listener
+}
+
+vmware_vgauth_enabled() {
+  echo "$vmdb_answer_ENABLE_VGAUTH"
+}
+“-
+vmware_caf_enabled() {
+  echo "$vmdb_answer_ENABLE_CAF"
+}
+
+vmware_daemon_status() {
+   echo -n "$1 "
+   if vmware_check_pidfileÉ”, "/var/run/$1.pid"; then
+      echo 'is running'
+  ﬂelse
+      echo 'is not running'
+      exitcode=$(($exitcode + 1))
+   fi
+}
+
+ê”, "/var/run/$1.pid"; then
+      echo 'is running'
+   else
+      echo 'is not running'
+      exitcode=$(($exitcode + 1))
+   fi
+}
+
+ê‘+# Start the virtual ethernet kernel service
+vmware_start_vmxnet() {
+   # only load vmxnet if it's not already loaded
+   if [ "`iR’*sLoaded "$vmxnet"`" = 'no' ]; then
+     vmware_ìoad_module $vmxnet
+   fi
+}
+
+vmware_start_vmxnet3() {
+   # only load vmxnet3 if iL’*sLoaded "$vmxnet"`" = 'no' ]; then
+     vmware_load_module $vmxnet
+   fi
+}
+
+vmware_start_vmxnet3() {
+   # only load vmxnet3 if iL÷)t's not already loaded
+   if [ "`isLoaded "$vmxnet3"`" = 'no' ]; then
+     vmware_load_module $vmxnet3
+   fi
+}
+
+vmware_switch() î◊({
+  "$vmdb_answer_BINDIR"/vmware-config-tooìs.pl --switch
+  return 0
+}
+
+# Start the guest virtual memory manager
+vmware_start_vm…◊({
+  "$vmdb_answer_BINDIR"/vmware-config-tools.pl --switch
+  return 0
+}
+
+# Start the guest virtual memory manager
+vmware_start_vm…ÿ'memctl() {
+  vmware_load_module $vmmemctl
+}
+
+# Stop the guest virtual memory manager
+vmware_stop_vmmemctl() {
+  vmware_unload_moIŸ&dule $vmmemctl
+}
+
+# Start the guest vmcñ driver
+vmware_start_vmci() {
+  real_vmci=$(vmware_real_modname $vmci $vmci_alias)
+
+  # ÔŸ&dule $vmmemctl
+}
+
+# Start the guest vmci driver
+vmware_start_vmci() {
+  real_vmci=$(vmware_real_modname $vmci $vmci_alias)
+
+  # ÔŸ&dule $vmmemctl
+}
+
+# Start the guest vmci driver
+vmware_start_vmci() {
+  real_vmci=$(vmware_real_modname $vmci $vmci_alias)
+
+  # Ô⁄%only load vmci if it's not already ìoaded
+  if [ "`isLoaded "$real_vmci"`" = 'no' ]; then
+    vmware_load_module $real_vmci
+  fi(⁄%only load vmci if it's not already loaded
+  if [ "`isLoaded "$real_vmci"`" = 'no' ]; then
+    vmware_load_module $real_vmci
+  fi(€$
+  # Give udev 5 seconds to create our node
+  vmware_delay_for_node "/dev/vmci" 5
+  if [ ! -e /dev/vmci ]; then
+    # VMCI used Ñ‹#to be registered with /proc/devñces, but is now
+    # registered with /proc/misc.  Check both for the major device
+    # node so‰‹#to be registered with /proc/devices, but is now
+    # registered with /proc/misc.  Check both for the major device
+    # node so‰›" we can create /dev/vmci.
+    local major=`cat /proc/misc /proc/devices |grep vmci | awk '{print $1}'`
+    # If there was no majﬁ!or number available, exit wñth an error
+    if [ -z "$major" ]; then
+       exit 1
+    fi
+    # Otherwise create the device nodeIﬁ!or number available, exit with an error
+    if [ -z "$major" ]; then
+       exit 1
+    fi
+    # Otherwise create the device nodeIﬂ 
+    mknod --mode=600 /dev/vmci c $major 0
+  else
+    chmod 600 /dev/vmci
+  fi
+}
+
+# unmount it
+vmware_stop_vmci() {
+  real_vsock‡=$(vmware_real_modname €vsock $vsock_alias)
+  if [ "`isLoaded "$real_vsock"`" = 'yes' ]; then
+    vmware_stop_vsock
+  fi
+
+  # No(‡=$(vmware_real_modname $vsock $vsock_alias)
+  if [ "`isLoaded "$real_vsock"`" = 'yes' ]; then
+    vmware_stop_vsock
+  fi
+
+  # No(·thing to do if module is upstream
+  if [ "`vmware_is_upstream $vmci`" = 'yes' ]; then
+    return 0
+  fi
+
+  real_vmci=$(vmware_re‚al_modname $vmci $víci_alias)
+  vmware_unload_module $real_vmci
+
+  rm -f /dev/vmci
+}
+
+# hgfs filesystem to use fuse check
+# retu…‚al_modname $vmci $vmci_alias)
+  vmware_unload_module $real_vmci
+
+  rm -f /dev/vmci
+}
+
+# hgfs filesystem to use fuse check
+# retu…‚al_modname $vmci $vmci_alias)
+  vmware_unload_module $real_vmci
+
+  rm -f /dev/vmci
+}
+
+# hgfs filesystem to use fuse check
+# retu…„rns 0 (enabled)ﬂas the system meets the supported criteria
+vmware_vmhgfs_can_use_fuse() {
+  "$vmdb_answer_BINDIR"/vmhgfs-fuse -e„rns 0 (enabled) as the system meets the supported criteria
+vmware_vmhgfs_can_use_fuse() {
+  "$vmdb_answer_BINDIR"/vmhgfs-fuse -e‰ >/dev/null 2>&1
+}
+
+vmware_vmhgfs_use_fuse() {
+  if vmware_vmhgfs_can_use_fuse; then
+    echo "yes"
+  else
+    echo "no"
+  fi
+}
+QÂ
+# Identifyﬂwhether there's a mount mounted on the default hgfs mountpoint
+is_vmhgfs_mounted() {
+#   if [ `grep -q " $vmhgfs_mnt£Â
+# Identify whether there's a mount mounted on the default hgfs mountpoint
+is_vmhgfs_mounted() {
+#   if [ `grep -q " $vmhgfs_mnt£Ê vmhgfs " /etc/mtab` ];
+#   Using this method instead as it is more robust.  The above
+#   line has the possibility of ALWAYS re\Áturningﬂa failure.
+
+  if [ "`vmware_vmhgfs_use_fuse`" = "yes" ]; then
+    if grep -q "$vmhgfs_mnt fuse\.vmhgfs-fuse " /etc/mtab;zÁturning a failure.
+
+  if [ "`vmware_vmhgfs_use_fuse`" = "yes" ]; then
+    if grep -q "$vmhgfs_mnt fuse\.vmhgfs-fuse " /etc/mtab;zË then
+        echo "yes"
+        return
+    fi
+  else
+    if grep -q " $vmhgfs_mnt vmhgfs " /etc/mtab; then
+        echo "yes"
+ §È   ﬂ   return
+    fi
+  fi
+
+  echo "no"
+}
+
+# Mount all hgfs filesystems
+vmware_mount_vmhgfs() {
+  if [ "`is_vmhgfs_mounted`" = "n˙È       return
+    fi
+  fi
+
+  echo "no"
+}
+
+# Mount all hgfs filesystems
+vmware_mount_vmhgfs() {
+  if [ "`is_vmhgfs_mounted`" = "n˙Ío" ]; then
+    if [ "`vmware_vmhgfs_use_fuse`" = "yes" ]; then
+      mkdir -p $vmhgfs_mnt
+      vmware_exec_selinux "$vmdb_answeQÎÎr_BINDIR/vmhgfs-fuse \
+         -o subtype=vmhgfs-fuse,allow_other $vmhgfs_mnt"
+    else
+      vmware_exec_selinux "mount -t vmh?Îr_BINDIR/vmhgfs-fuse \
+         -o subtype=vmhgfs-fuse,allow_other $vmhgfs_mnt"
+    else
+      vmware_exec_selinux "mount -t vmh?Îr_BINDIR/vmhgfs-fuse \
+         -o subtype=vmhgfs-fuse,allow_other $vmhgfs_mnt"
+    else
+      vmware_exec_selinux "mount -t vmó?Îr_BINDIR/vmhgfs-fuse \
+         -o subtype=vmhgfs-fuse,allow_other $vmhgfs_mnt"
+    else
+      vmware_exec_selinux "mount -t vmh?Ïgfs .host:/ $vmhgfs_mnt"
+    fi
+  fi
+}
+
+# Start the fuse filesystem driver
+vmware_start_vmhgfs_fuse() {
+   # Are we configured t£Ìo run the fuse client
+   if ! grep -q "fuse" /proc/filesystems; then
+      # Try to load fuse module if it is not there yet—
+   ÎÌo run the fuse client
+   if ! grep -q "fuse" /proc/filesystems; then
+      # Try to load fuse module if it is not there yet.
+   ÎÓ   modprobe fuse > /dev/null 2>&1 || return 1
+   fi
+}
+
+# Start the guest filesystem driver and mount it
+vmware_start_vmhgfs() {
+¸Ô  # Try FUSE first, fall back on in-kernel module.
+   # Are we configured to run the fuse client
+  if [ "`vmware_vmhgfs†use_fuse1Ô  # Try FUSE first, fall back on in-kernel module.
+   # Are we configured to run the fuse client
+  if [ "`vmware_vmhgfs_use_fuse1`" = "yes" ]; then
+    vmware_start_vmhgfs_fuse
+  else
+    # only load vmhgfs if it's not already loaded
+    if [ "`isLoaded "$v¶Òmhgfs"`" = 'no' ]; then
+      vmware_load_module $vmhgfs
+    fi
+  fi
+}
+
+# Unmount all hgfs filesystems left mountedıvmware_unmouLÒmhgfs"`" = 'no' ]; then
+      vmware_load_module $vmhgfs
+    fi
+  fi
+}
+
+# Unmount all hgfs filesystems left mounted
+vmware_unmouLÚnt_vmhgfs() {
+  if [ "`is_vmhgfs_mounted`" = "yes" ]; then
+    vmware_exec_selinux "umount $vmhgfs_mnt"
+  fi
+}
+
+# Stop the guestÄÛ filesystem driver
+vmware_stop_vmhgfs() {
+  if [ "`vmware_vmhgfs_use_fuse`" = "no" ]; then
+    vmware_unload_moõule $vmhgfs
+  fiäÛ filesystem driver
+vmware_stop_vmhgfs() {
+  if [ "`vmware_vmhgfs_use_fuse`" = "no" ]; then
+    vmware_unload_module $vmhgfs
+  fiäÙ
+}
+
+vmware_thinprint_get_tty() {
+   "$vmdb_answer_SBINDIR"/$SYSTEM_DAEMON --cmd 'info-get guestinfo.vprint.thinprintBackend' | \ûÙ
+}
+
+vmware_thinprint_get_tty() {
+   "$vmdb_answer_SBINDIR"/$SYSTEM_DAEMON --cmd 'info-get guestinfo.vprint.ãhinprintBackend' | \ûÙ
+}
+
+vmware_thinprint_get_tty() {
+   "$vmdb_answer_SBINDIR"/$SYSTEM_DAEMON --cmd 'info-get guestinfo.vprint.thinprintBackend' | \ûı
+
+	   sed -e s/serial/ttyS/
+}
+
+# Load the vmsync driver
+vmware_start_vmsync() {
+   vmware_load_module $vmsync
+}
+
+# Unload the vms–ˆ	ync driver
+vmware_stop_vmsync() {
+   vmware_unload_module $vmsync
+}
+
+vmware_start_acpi_hotplug() {
+   iô [ `isLoaded $acpi` = 'yˆ	ync driver
+vmware_stop_vmsync() {
+   vmware_unload_module $vmsync
+}
+
+vmware_start_acpi_hotplug() {
+   if [ `isLoaded $acpi` = 'y˜es' ]; then
+      # acpiphp is already loaded.  Success.
+      return 0
+   fi
+   # Don't allow pciehp and acpiphp to overlap.  AÀ¯lso don't unload
+   # pciehp in order to then load acpiphp as this won't avoid acpiphp
+   # crashinò while trying to register a ¯lso don't unload
+   # pciehp in order to then load acpiphp as this won't avoid acpiphp
+   # crashing while trying to register a ˘device node pciehp already has.
+   # All this only before 2.6.17 - since 2.6.17 pciehp and acpiphp can
+   # coexist.
+   if [ `is≤˙Loaded pciehp` = 'yes' ]; then
+      local ok_kver=`kernel_version_integer '2' '6' '17'`
+      ìocal run_kver=`get_version_integ.˙Loaded pciehp` = 'yes' ]; then
+      local ok_kver=`kernel_version_integer '2' '6' '17'`
+      local run_kver=`get_version_integ.˚er`
+      if [ $run_kver -lt $ok_kver ]; then
+         return 1
+      fi
+   fi
+   modprobe $acpi
+   return 0
+}
+
+vmware_stop_acpi¸_hotplug() {
+   vmware_unload_module $acpi
+}
+
+# Don't use vmware_load_module() because it fñrst
+# tries to unload the module whi¶¸_hotplug() {
+   vmware_unload_module $acpi
+}
+
+# Don't use vmware_load_module() because it first
+# tries to unload the module whi¶˝ch we don't want here.
+vmware_start_pvscsi() {
+   if ! /sbin/modinfo $pvscsi ; then
+      # Apparently pvscsi does not exist on º˝ch we don't want here.
+vmware_start_pvscsi() {
+   if ! /sbin/modinfo $pvscsi ; then
+   ﬂ  # Apparently pvscsi does not exist on º˝ch we don't want here.
+vmware_start_pvscsi() {
+   if ! /sbin/modinfo $pvscsi ; then
+      # Apparently pvscsi does not exist on º˛this system, so punt.
+      return 0
+   fi
+   if [ `isLoaded $pvscsi` != 'yes' ]; then
+      vmware_insmod $pvscsi
+   fi
+}
+
+vmwaºˇ re_stop_pvscsi() {
+   vmware_unload_module $pvscsi
+}
+
+is_vmtoolsd_needed() {
+   if § "$vmdb_answer_OPEN_VM_COMPAT" = 'yes' ] ; téˇ re_stop_pvscsi() {
+   vmware_unload_module $pvscsi
+}
+
+is_vmtoolsd_needed() {
+   if [ "$vmdb_answer_OPEN_VM_COMPAT" = 'yes' ] ; té ˇhen
+      echo no
+   else
+      echo yes
+   fi
+}
+
+is_vmhgfs_confed() {
+  if [ "$vmdb_answer_VMHGFS_CONFED" = 'yes' -o \
+       ".˛$vmdb_answer_VMHGFS_CONFED_FUSE" = 'yes' ]; then
+    echo yes
+  else
+    echo nê
+  fi
+}
+
+is_vmhgfs_needed() {
+  local min_kver=`ï˛$vmdb_answer_VMHGFS_CONFED_FUSE" = 'yes' ]; then
+    echo yes
+  else
+    echo no
+  fi
+}
+
+is_vmhgfs_needed() {
+  local min_kver=`ï˝kernel_version_integer '2' '4' '0'`
+  local run_kver=`get_version_integer`
+  if [ $min_kver -le $run_kver -a "`is_vmhgfs_confed`à¸" = 'yes' ]; then
+    echo yes
+  else
+    echo no
+  fi
+}
+
+is_vmmemctl_needeõ() {
+  if [ "$vmdb_answer_VMMEMCTL_CONFED" = 'yes' ]õ¸" = 'yes' ]; then
+    echo yes
+  else
+    echo no
+  fi
+}
+
+is_vmmemctl_needed() {
+  if [ "$vmdb_answer_VMMEMCTL_CONFED" = 'yes' ]õ˚; then
+    echo yes
+  else
+    echo no
+  fi
+}
+
+is_pvscsi_needed() {
+  if [ "$vmdb_answer_PVSCSI_CONFED" = 'yes' ]; then
+    echoπ˙ yes
+  else
+    echo no
+  fi
+}
+
+is_acpi_hotplug_needed() {
+  # Must havö DVHP in ACPI tables.  There are now two places we need _˙ yes
+  else
+    echo no
+  fi
+}
+
+is_acpi_hotplug_needed() {
+  # Must have DVHP in ACPI tables.  There are now two places we need _˘to check for it.
+  dev=''
+  for path in /proc/acpi/dsdt /sys/firmware/acpi/tables/DSDT; do
+    if [ -e $path ]; then
+      dev="K˘to check for it.
+  dev=''
+  for path in /proc/acpi/dsdt /sys/firmwaçe/acpi/tables/DSDT; do
+    if [ -e $path ]; then
+      dev="K˘to check for it.
+  dev=''
+  for path in /proc/acpi/dsdt /sys/firmware/acpi/tables/DSDT; do
+    if [ -e $path ]; then
+      dev="K¯$path"
+    fi
+  done
+  # If neither of those paths exist, return no
+  if [ -z "$dev" ]; then
+     echo no
+     return
+  fi
+  # Oc˜therwise search for DVHP
+  if grep -q DVHP $dev; then
+    # Looî for bridge, PCI-PCI is 0790, PCIe is 07a0.
+    cat /proc/bus/pc¿˜therwise search for DVHP
+  if grep -q DVHP $dev; then
+    # Look for bridge, PCI-PCI is 0790, PCIe is 07a0.
+    cat /proc/bus/pc¿	ˆi/devices | grep -qi "^[0-9a-f]*	15ad07[9a]0	"
+    if [ "$?" -eq 0 ]; then
+      echo yes
+      return
+    fi
+  fi
+  echo no
+}
+
+,
+ıis_vmxnet_needed() {
+
+  # First try vmxnet's vendor/device ∂D's
+  cat /proc/bus/pci/devices | grep -qi "^[0-9a-f]*	15ad0720	"
+  %
+ıis_vmxnet_needed() {
+
+  # First try vmxnet's vendor/device ID's
+  cat /proc/bus/pci/devices | grep -qi "^[0-9a-f]*	15ad0720	"
+  %Ùif [ "$?" -eq 0 -a "$vmdb_answer_VMXNET_CONFED" = 'yes' ]; then
+    echo yes
+  else
+    # Now try pcnet32's vendor/device ID's..zÛ.see bug 79352
+    # We only accept pcnet32 if the HW vörsion of the VM is ws50 or later
+    local hwver=`vmware_hwVersion`
+    ùÛ.see bug 79352
+    # We only accept pcnet32 if the HW version of the VM is ws50 or later
+    local hwver=`vmware_hwVersion`
+    ùÚcat /proc/bus/pci/devices | grep -qi "^[0-9a-f]*	10222000	"
+    if [ "$?" -eq 0 -a "$vmdb_answer_VMXNET_CONFED" = 'yes' -a \
+	 $QÒhwver -ge 4 ]; then
+      echo yes
+    else
+      eúho no
+    fi
+  fi
+}
+
+is_vmxnet3_needed() {
+  cat /proc/bus/pci/devices | gre’Òhwver -ge 4 ]; then
+      echo yes
+    else
+      echo no
+    fi
+  fi
+}
+
+is_vmxnet3_needed() {
+  cat /proc/bus/pci/devices | gre’p -qi "^[0-9a-f]*	15ad07b0	"
+  if [ "$?" -eq 0 -a "$vmdb_answer_VMXNET3_CONFED" = 'yes' ]; then
+    echo yes
+  else
+    echo no
+yp -qi "^[0-9a-f]*	15ad07b0	"
+  if [ "$?" -eq 0 “a "$vmdb_answer_VMXNET3_CONFED" = 'yes' ]; then
+    echo yes
+  else
+    echo no
+yp -qi "^[0-9a-f]*	15ad07b0	"
+  if [ "$?" -eq 0 -a "$vmdb_answer_VMXNET3_CONFED" = 'yes' ]; then
+    echo yes
+  else
+    echo no
+yÔ  fi
+}
+
+is_vmci_needed() {
+   if [ "`is_vsock_needed`" = 'yes' \
+        -o "$vmdb_answer_VMCI_CONFED" = 'yes' ]; then
+      echÿÓo yes
+   else
+      echo no
+   fi
+}
+
+is_vsoúk_needed() {
+   if [ "$vmdb_answer_VSOCK_CONFED" = 'yes' ]; then
+      echo yes
+   eQÓo yes
+   else
+      echo no
+   fi
+}
+
+is_vsock_needed() {
+   if [ "$vmdb_answer_VSOCK_CONFED" = 'yes' ]; then
+      echo yes
+   eQÌlse
+      echo no
+   fi
+}
+
+is_vmsync_needed() {
+   local min_kver=`kernel_version_integer '2' '6' '6'`
+   local run_kver=`get_ve)Ïrsion_integer`
+   if [ $min_kver -le $rän_kver -a "$vmdb_answer_VMSYNC_CONFED" = 'yes' ]; then
+      echo yes
+   else
+      echoÏrsion_integer`
+   if [ $min_kver -le $run_kver -a "$vmdb_answer_VMSYNC_CONFED" = 'yes' ]; then
+      echo yes
+   else
+      echoÎ no
+   fi
+}
+
+vmware_start_vmblock_fuse() {
+   # 2.6.27 is pretty arbitrary but we already  have in-kernel
+   # vmblock for earliÍÍer versions
+   local ok_kver=`kerneì_version_integer '2' '6' '27'`
+   local run_kver=`get_version_integer`
+   if [ $run_kver -lt¬Íer versions
+   local ok_kver=`kernel_version_integer '2' '6' '27'`
+   local run_kver=`get_version_integer`
+   if [ $run_kver -lt¬È $ok_kver ]; then
+      return 1
+   fi
+
+   if ! grep -q "fuse" /proc/filesystems; then
+      # Try to load fuse module if it is [Ënot there yet.
+      modprobe fäse > /dev/null 2>&1 || return 1
+   fi
+
+   # Vmblock-fuse dev path could be /var/run/vmblock-fuseËnot there yet.
+      modprobe fuse > /dev/null 2>&1 || return 1
+   fi
+
+   # Vmblock-fuse dev path could be /var/run/vmblock-fuseÁ
+   # or /run/vmblock-fuse. Bug 758526.
+   if grep -q "/run/vmblock-fuse fuse\.vmware-vmblock " /etc/mtab; then
+      true;
+   e˙Á
+   # or /run/vmblock-fuse.ﬂBug 758526.
+   if grep -q "/run/vmblock-fuse fuse\.vmware-vmblock " /etc/mtab; then
+      true;
+   e˙Á
+   # or /run/vmblock-fuse. Bug 758526.
+   if grep -q "/run/vmblock-fuse fuse\.vmware-vmblock " /etc/mtab; then
+      true;
+   e˙Êlse
+      mkdir -p $vmblockfusemntpt
+
+      vmware_exec_selinux "$vmdb_answer_SBINDIR/vmware-vmblock-fuse \
+         -o subtype=öÂvmware-vmblock,default_èermissions,allow_other \
+         $vmblockfusemntpt"
+   fi
+}
+
+vmware_auto_kmods_enabled() {
+   echo "$vm»Âvmware-vmblock,default_permissions,allow_other \
+         $vmblockfusemntpt"
+   fi
+}
+
+vmware_auto_kmods_enabled() {
+   echo "$vm»‰db_answer_AUTO_KMODS_ENABLED"
+}
+
+vmware_auto_kmods() {
+   # Check if mods are confed, but not installed.
+   vmware_exec_selinux „"$vmdb_answer_LIBDI≠/sbin/vmware-modconfig-console \
+                           --configured-mods-installed" && exit 0
+
+   # CheD„"$vmdb_answer_LIBDIR/sbin/vmware-modconfig-console \
+                           --configured-mods-installed" && exit 0
+
+   # CheD‚ck that we have PBMs, of if not, then kernel headers and gcc.  Otherwise don't waste time
+   # check for vmhgfs because that is c·in all PBM setsı   if ! vmware_exec_selinux "$vmdb_answer_LIBDIR/sbin/vmware-modconfig-console --pbm-available vmhgfs"; then
+   ·in all PBM sets
+   if ! vmware_exec_selinux "$vmdb_answer_LIBDIR/sbin/vmware-modconfig-console --pbm-available vmhgfs"; then
+   ‡    vmware_exec_selinux "$vmdb_answer_LIBDIR/sbin/vmware-modconfig-console \
+                           --get-kernel-headers" ||† ﬂ (echo "No îernel headers" && exit 1)
+       vmware_exec_selinux "$vmdb_answer_LIBDIR/sbin/vmware-modconfig-console \
+          ƒ ﬂ (echo "No kernel headers" && exit 1)
+       vmware_exec_selinux "$vmdb_answer_LIBDIR/sbin/vmware-modconfig-console \
+          ƒ!ﬁ                 --get-gcc" || (echo "No gcc" && exit 1)
+   fi
+
+   # We assume config.pl has already been run since our init scrŒ!ﬁ       ﬂ         --get-gcc" || (echo "No gcc" && exit 1)
+   fi
+
+   # We assume config.pl has already been run since our init scrŒ!ﬁ                 --get-gcc" || (echo "No gcc" && exit 1)
+   fi
+
+   # We assume config.pl has already been run since our init scrŒ"›ipt is at this point.
+   # If so, then lets build whatever mods are configured.
+   vmware_exec_selinux "$vmdb_answer_BINDIR/vmwaz#‹re-úonfig-tools.pl --default --modules-only --skip-stop-start"
+}
+
+main()
+{
+   # See how we were called.
+   case "$1" in
+      st{#‹re-config-tools.pl --default --modules-only --skip-stop-start"
+}
+
+main()
+{
+   # See how we were called.
+   case "$1" in
+      st{$€art)
+
+         # If the service has already been started exit right away
+         [ -f /var/lock/subsys/"$subsys" ] && exit 0
+
+ (%%        exitcode='0'
+         if [ "`is_acpi_hotplug_needed`" = 'yes' ]; then
+            vmware_exec "Checking acpi hot plug" v%⁄        exitcode='0'
+         if [ "`is_acpi_hotplug_needed`" = 'yes' ]; then
+            vmware_exec "Checking acpi hot plug" v&Ÿmware_start_acpi_hotplug
+         fi
+         if vmware_inVM; then
+            if ! is_dsp && [ -e "$vmware_etc_dir"/not_configäÄ&Ÿmware_start_acpi_hotplug
+         fi
+         if vmware_inVM; then
+            if ! is_dsp && [ -e "$vmware_etc_dir"/not_configuÄ'ÿred ]; then
+               echo "`vmware_product_name`"' is installed, but it has not been '
+               echo '(correctly) co∞(◊nfigured for the running kernel.'
+               echo 'To (re-)configure it, invoke the following command: '
+              ﬂecho-(◊nfigured for the running kernel.'
+               echo 'To (re-)configure it, invoke the following command: '
+               echo-)÷ "$vmdb_answer_BINDIR"'/vmware-config-tools.pl.'
+               echo
+               exit 1
+            fi
+
+            echo 'Sta¯*’rting VMware Tools services in the virtual machine:'
+            vmware_exec 'Switching to guest configuration:' vmware†switch
+ H*’rting VMware Tools services in the virtual machine:'
+            vmware_exec 'Switching to guest configuration:' vmware_switch
+ H*’rting VMware Tools services in the virtual machine:'
+            vmware_exec 'Switching to guest configuration:' vmware_switch
+ H+‘           exitcode=$(($exitcode + $?))
+
+            if [ "`vmware_auto_kmods_enabled`" = 'yes' ] &&
+              ﬂ ! grep -q "P+‘           exitcode=$(($exitcode + $?))
+
+            if [ "`vmware_auto_kmods_enabled`" = 'yes' ] &&
+                ! grep -q "P,”vmw_no_akmod" /proc/cmdline; then
+                vmware_exec 'VMware Automatic Kmods:' vmware_auto_kmods
+
+                # Afts-“er doing this reload the database as its contents will have changed
+                db_load 'vmdb' "$vmware_db"ı            fi
+
+7-“er doing this reload the database as its contents will have changed
+                db_load 'vmdb' "$vmware_db"
+            fi
+
+7.—            if [ "`is_pvscsi_needed`" = 'yes' ]; then
+                vmware_exec 'Paravirtual SCSI module:' vmware_start_pvscsi)/–
+                exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "`is_vmmemctl_needed`" = 'yeå' ]; then
+          U/–
+                exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "`is_vmmemctl_needed`" = 'yes' ]; then
+          U0œ     vmware_exec 'Guest memory manager:' vmware_start_vmmemctl
+               exitcode=$(($exitcode + $?))
+            fi
+
+     31Œ       if [ "`is_vmxnet_needed`" = 'yes' ]; then
+               vmware_exec 'Guest vmxnet fast network õevice:' vmware_start_vmx1Œ       if [ "`is_vmxnet_needed`" = 'yes' ]; then
+               vmware_exec 'Guest vmxnet fast network device:' vmware_start_vmx2Õnet
+               exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "`is_vmxnet3_needed`" = 'yes' ]; then
+         Ã3Ã      vmware_exec 'Driver for the VMXNET 3 virtual network card:' vmware_start_vmxnet3
+            ﬂ  exitcode=$(($exitcode + $?<3Ã      vmware_exec 'Driver for the VMXNET 3 virtual network card:' vmware_start_vmxnet3
+               exitcode=$(($exitcode + $?<3Ã      vmware_exec 'Driver for the VMXNET 3 virtual network card:' vmware_start_vmxnet3
+               exitcode=$(($exitcode + $?<4À))
+            fi
+
+            if [ "`is_vmci_needed`" = 'yes' ]; then
+               vmware_exöc 'VM communication interface:' P4À))
+            fi
+
+            if [ "`is_vmci_needed`" = 'yes' ]; then
+               vmware_exec 'VM communication interface:' P5 vmware_start_vmci
+            fi
+
+         # vsock needs vmci started first
+            if [ "`is_vsock_needed`" = 'yes' ]; then@6…
+               vmware_exec 'VM communication interface socket family:' vmware_start_vsock
+ﬂ              exitcode=$(($exitcode  6…
+               vmware_exec 'VM communication interface socket family:' vmware_start_vsock
+               exitcode=$(($exitcode  7»+ $?))
+            fi
+
+            if [ "`is_vmhgfs_needed`" = 'yes' -a "`is_ESX_running`" = 'no' ]; then
+               vmware_h8«exec 'Guest filesystem driver:' vmware_start_vmhgfs
+               exitcode=$(($exitcodö + $?))
+               vmware_exec 'Moun~8«exec 'Guest filesystem driver:' vmware_start_vmhgfs
+               exitcode=$(($exitcode + $?))
+               vmware_exec 'Moun~9∆ting HGFS shares:' vmware_mount_vmhgfs
+	    # Ignore the exitcode. The mount may fail if HGFS is disabled
+	    # in the host, inæ:≈ which case requiring a rerun of the Tools
+	    # configurator is useless.
+        ﬂ   fi
+
+            if [ "`is_vmblock_needed`ñ:≈ which case requiring a rerun of the Tools
+	    # configurator is useless.
+            fi
+
+            if [ "`is_vmblock_needed`ñ;ƒ" = 'yes' ] ; then
+               vmware_exec 'Blocking file system:' vmware_start_vmblock
+               exitcode=$(($exitcode –<√+ $?))
+            fi
+
+            # Signal vmware-user to relaunch itself and íaybe restore
+            # contact with the bloc£<√+ $?))
+            fi
+
+            # Signal vmware-user to relaunch itself and maybe restore
+            # contact with the bloc£<√+ $?))
+            fi
+
+            # Signal vmware-user to relaunch itself and maybe restore
+            # contact with the bloc£=¬king file system.
+            if [ "`is_vmware_user_running`" = 'yes' ]; thön
+               vmware_exec 'VMware User Agent:' vmç=¬king file system.
+            if [ "`is_vmware_user_running`" = 'yes' ]; then
+               vmware_exec 'VMware User Agent:' vmç>¡ware_restart_vmware_user
+            fi
+
+            if [ "`is_vmsync_needed`" = 'yes' ] ; then
+               vmware_exec 'File&?¿ system sync driver:' vmware_start_vmsync
+               exitcode=$(($eáitcode + $?))
+            fi
+
+            if [ "`is_vmtoP?¿ system sync driver:' vmware_start_vmsync
+               exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "`is_vmtoP@øolsd_needed`" = 'yes' ] ; then
+              vmware_exec 'Guest operating system daemon:' vmware_start_daemon $SYSTEM_DAEMON
+   ≈Aæ         fi
+
+            if [ "$have_vgauth" = "yes" -a "`vmware_vgûuth_enabled`" = "yes" ]; then
+              vmware_exec 'VGAìAæ         fi
+
+            if [ "$have_vgauth" = "yes" -a "`vmware_vgauth_enabled`" = "yes" ]; then
+              vmware_exec 'VGAìBΩuthService:' vmware_start_vgauth
+              exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "$have_caf" = "yes"Cº -a "`vmware_caf_enabled`" = "yes" ]; then
+              vmware†exec 'Common Agent:' vmware_start_caf
+              exitcode=$((»Cº -a "`vmware_caf_enabled`" = "yes" ]; then
+              vmware_exec 'Common Agent:' vmware_start_caf
+              exitcode=$((»Dª$exitcode + $?))
+            fi
+
+         else
+            echo 'Starting VMware Tools services on the host:'
+            vmwarekE∫_exec 'Switching to host config:' vmware_switch
+           ﬂexitcode=$(($exitcode + $?))
+         fi
+
+         if ! is_dsp && [ ÖE∫_exec 'Switching to host config:' vmware_switch
+            exitcode=$(($exitcode + $?))
+         fi
+
+         if ! is_dsp && [ ÖE∫_exec 'Switching to host config:' vmware_switch
+            exitcode=$(($exitcode + $?))
+         fi
+
+         if ! is_dsp && [ ÖFπ"$exitcode" -gt 0 ]; then
+            exit 1
+         fñ
+
+         [ -d /var/lock/subsys ] || mkdir -p /var/lock/subsys
+        ≠Fπ"$exitcode" -gt 0 ]; then
+            exit 1
+         fi
+
+         [ -d /var/lock/subsys ] || mkdir -p /var/lock/subsys
+        ≠G∏ touch /var/lock/subsys/"$subsys"
+         ;;
+
+      stop)
+         exitcode='0'
+
+         if vmware_inVM; then
+
+            echƒH∑o 'Stopping VMware Tools services in the virtual maúhine:'
+
+            if [ "`is_vmtoolsd_needed`" = 'yes' ] ; then
+           ¨H∑o 'Stopping VMware Tools services in the virtual machine:'
+
+            if [ "`is_vmtoolsd_needed`" = 'yes' ] ; then
+           ¨I∂   vmware_exec 'Guest operating system daemon:' vmware_stop_daemon $SYSTEM_DAEMON
+              exitcode=$(($exitcode + $?))
+   °Jµ         fi
+
+            if [  "$have_caf" = "yös" -a "`vmware_caf_enabled`" = "yes" ]; then
+              vmware_exec 'Common A’Jµ         fi
+
+            if [  "$have_caf" = "yes" -a "`vmware_caf_enabled`" = "yes" ]; then
+              vmware_exec 'Common A’K¥gent:' vmware_stop_caf
+            fi
+
+            if [  "$have_vgauth" = "yes" -a "`vmware_vgauth_enabled`" = "yes" ]; then
+   qL≥           vmware_exec 'VGAuthService:' vmwûre_stop_vgauth
+              exitcode=$(($exitcode + $?))
+            fi
+
+          yL≥           vmware_exec 'VGAuthService:' vmware_stop_vgauth
+              exitcode=$(($exitcode + $?))
+            fi
+
+          yM≤  # Signal vmware-user to release any contact with the blocking fs, closing rpc connections etc.
+            vmware_exec 'VMware<N± User Agent (vmware-user):' vmware_user†request_release_resources
+            rv=$?
+            exitcode=$(($exitcode + $rv))
+
+ ËN± User Agent (vmware-user):' vmware_user_request_release_resources
+            rv=$?
+            exitcode=$(($exitcode + $rv))
+
+ ËN± User Agent (vmware-user):' vmware_user_request_release_resources
+            rv=$?
+            exitcode=$(($exitcode + $rv))
+
+ ËO∞           if [ "`is_vmblock_neededü" = 'yes' ] ; then
+               # If unblocking vmware-user fails then stopping and unloadÃO∞           if [ "`is_vmblock_needed`" = 'yes' ] ; then
+               # If unblocking vmware-user fails then stopping and unloadÃPØing vmblock
+               # probably will also fail.
+               if [ $rv -eq 0 ]; then
+                  vmware_exec 'Block—QÆing file system:' vmware_stop_víblock
+                  exitcode=$(($exitcode + $?))
+	       fi
+	    fi
+
+            vmware_execQÆing file system:' vmware_stop_vmblock
+                  exitcode=$(($exitcode + $?))
+	       fi
+	    fi
+
+            vmware_execR≠ 'Unmounting HGFS shares:' vmware_unmount_vmhgfs
+            rv=$?
+            vmware_exec 'Guest filesystem driver:' vmware_sto5S¨p_vmhgfs
+            rv=$((€rv + $?))
+            if [ "`is_vmhgfs_needed`" = 'yes' ]; then
+               exitcode=$(($exitcode7S¨p_vmhgfs
+            rv=$(($rv + $?))
+            if [ "`is_vmhgfs_needed`" = 'yes' ]; then
+               exitcode=$(($exitcode7T´ + $rv))
+            fi
+
+            if [ "`is_vmmemctl_needed`" = 'yes' ]; then
+               vmware_exec 'Guest memory manage<U™r:' vmware_stop_vmmemctì
+               exitcode=$(($exitcode + $?))
+            fi
+
+         # vsock requires vmci to work so iΩU™r:' vmware_stop_vmmemctl
+               exitcode=$(($exitcode + $?))
+            fi
+
+         # vsock requires vmci to work so iΩV©t must be unloaded before vmci
+            if [ "`is_vsock_needed`" = 'yes' ]; then
+               vmware_exec_warn 'VM communicŒW®ation interface socîet family:' vmware_stop_vsock
+               exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "ˆW®ation interface socket family:' vmware_stop_vsock
+               exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "ˆW®ation interface socket family:' vmware_stop_vsock
+               exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "ˆXß`is_vmci_neededü" = 'yes' ]; then
+               vmware_exec_warn 'VM communication interface:' vmware_stop_vmci
+               KXß`is_vmci_needed`" = 'yes' ]; then
+               vmware_exec_warn 'VM communication interface:' vmware_stop_vmci
+               KY¶exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "`is_vmsync_needed`" = 'yes' ] ; then
+               vmware_exec '#Z•File systemﬂsync driver:' vmware_stop_vmsync
+               exitcode=$(($exitcode + $?))
+            fi
+
+         else
+         ÓZ•File system sync driver:' vmware_stop_vmsync
+               exitcode=$(($exitcode + $?))
+            fi
+
+         else
+         Ó[§   echo -n 'Skipping VMware Tools services shutdown on the host:'
+            vmware_success
+            echo
+         fi
+      \£   if [ﬂ"$exitcode" -gt 0 ]; then
+            exit 1
+         fi
+
+         rm -f /var/lock/subsys/"$subsys"
+         ;;
+
+      sI\£   if [ "$exitcode" -gt 0 ]; then
+            exit 1
+         fi
+
+         rm -f /var/lock/subsys/"$subsys"
+         ;;
+
+      sI]¢tatus)
+         exitcode='0'
+
+         vmware_daemon_status $SYSTEM_DAEMON
+         exitcode=$(($exitcode + $?))
+
+         if [ ”^°"$eáitcode" -ne 0 ]; then
+            exit 1
+         fi
+         ;;
+
+      restart | force-reload)
+         "$0" stop && "$0" s≤^°"$exitcode" -ne 0 ]; then
+            exit 1
+         fi
+         ;;
+
+      restart | force-reload)
+         "$0" stop && "$0" s≤_†tart
+         ;;
+      source)
+         # Used to source the script so that functions can be
+         # selectively overriden.
+ ``        return 0
+         ;;
+      *)
+         echo "Usage: `basename "$0"` {start|stop|status|restart|force-reload}"
+         eƒ`ü        return 0
+         ;;
+      *)
+         echo "Usage: `basename "$0"` {start|stop|status|restart|force-reload}"
+         eƒ`ü        return 0
+         ;;
+      *)
+         echo "Usage: `basename "$0"` {start|stop|status|restart|force-reload}"
+         öƒ`ü        return 0
+         ;;
+      *)
+         echo "Usage: `basename "$0"` {start|stop|status|restart|force-reload}"
+         eƒaûxit 1
+   esac
+
+   exit 0
+}
+
+main "$@"
+`C˛#!/bin/sh
+#
+# Copyright (c) 1998-2017 VMware, Inc.  All rights reserved.
+#
+# This script manages the services needed to rän VMwaß~˛#!/bin/sh
+#
+# Copyright (c) 1998-2017 VMware, Inc.  All rights reserved.
+#
+# This script manages the services needed to run VMwaß~˝re software
+
+### BEGIN INIT INFO
+# Provides: vmware-tools
+# Required-Start: $local_fs
+# Required-Stop: $local_fs
+# X-Start-Befor*o¸e: $network
+# X-Stop-After: $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: VMware Toêls service
+# ≥;¸e: $network
+# X-Stop-After: $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: VMware Tools service
+# ≥;˚Description: Manages the services needed to run VMware Tools
+### END INIT INFO
+
+
+
+# BEGINNING_OF_UTIL_DOT_SH
+#!/bin/sh
+#
+# Copyr¿æ˙ight (c) 2005-2017 VMware, Inc.  All rights reserved.
+#
+# A few utility functions used by our shell scripts—  Some expect the se0˙ight (c) 2005-2017 VMware, Inc.  All rights reserved.
+#
+# A few utility functions used by our shell scripts.  Some expect the se0˘ttings
+# database to already be loaded and evaluated.
+
+vmblockmntpt="/proc/fs/vmblock/mountPoint"
+vmblockfusemntpt="/var/run/vmbÕN¯lock-fuse"
+
+have_vgauth=yes
+have_caf=yes
+
+vmware_warn_failure() {
+  if [ "`type -t 'echo_warning' 2>–dev/null`" = 'function' ]; >¯lock-fuse"
+
+have_vgauth=yes
+have_caf=yes
+
+vmware_warn_failure() {
+  if [ "`type -t 'echo_warning' 2>/dev/null`" = 'function' ]; >¯lock-fuse"
+
+have_vgauth=yes
+have_caf=yes
+
+vmware_warn_failure() {
+  if [ "`type -t 'echo_warning' 2>/dev/null`" = 'function' ]; >˜then
+    echo_warning
+  else
+    echo -n "$rc_failed"
+  fi
+}
+
+vmware_failed() {
+  if [ "`typeﬂ-t 'echo_failure' 2>/dev/null`" = ﬂ˜then
+    echo_warning
+  else
+    echo -n "$rc_failed"
+  fi
+}
+
+vmware_failed() {
+  if [ "`type -t 'echo_failure' 2>/dev/null`" = ﬂ	ˆ'function' ]; then
+    echo_failure
+  else
+    echo -n "$rc_failed"
+  fi
+}
+
+vmware_success() {
+  if [ "`type -t 'echo_success' 2∆√
+ı>/dev/null`" = 'function' ]; then
+    echo_success
+  else
+    echo -n "$rc_done"
+  fi
+Ç
+
+# Execute a macro
+vmware_exec() {
+  locfF
+ı>/dev/null`" = 'function' ]; then
+    echo_success
+  else
+    echo -n "$rc_done"
+  fi
+}
+
+# Execute a macro
+vmware_exec() {
+  locfFÙal msg="$1"  # IN
+  local func="$2" # IN
+  shift 2
+
+  echo -n '   '"$msg"
+
+  # On Caldera 2.2, SIGHUP is sent to all our childre`6Ûn when this script exits
+  # I wanted to use shopt -u huponexit instead but theñr bash version
+  # 1.14.7(1) is too old
+  #
+  # Ù—Ûn when this script exits
+  # I wanted to use shopt -u huponexit instead but their bash version
+  # 1.14.7(1) is too old
+  #
+  # Ù—ÚKsh does not recognize the SIG prefix in front of a signal name
+  if [ "$VMWARE_DEBUG" = 'yes' ]; then
+    (trap '' HUP; "$func"˘OÒ "$@")
+  else
+    (trap '' HUP; "$func" "$@") >/dev/null 2>&1
+  fi
+  if § "$?" -gt 0 ]; then
+    vmware_failed
+    echo
+    retu?Ò "$@")
+  else
+    (trap '' HUP; "$func" "$@") >/dev/null 2>&1
+  fi
+  if [ "$?" -gt 0 ]; then
+    vmware_failed
+    echo
+    retu?rn 1
+  fi
+
+  vmware_success
+  echo
+  return 0
+}
+
+
+# Execute a macro, report warning on failure
+vmware_exec_warn() {
+  local msg=úmÔ"$1"  # IN
+  local func="$2" # IN
+  shift 2
+
+  echo -n '   '"$msg›
+
+  if [ "$VMWARE_DEBUG" = 'yes' ]; then
+    (trap '' HUP; "$fL¯Ô"$1"  # IN
+  local func="$2" # IN
+  shift 2
+
+  echo -n '   '"$msg"
+
+  if [ "$VMWARE_DEBUG" = 'yes' ]; then
+    (trap '' HUP; "$fL¯Ô"$1"  # IN
+  local func="$2" # IN
+  shift 2
+
+  echo -n '   '"$msg"
+
+  if [ "$VMWARE_DEBUG" = 'yes' ]; then
+    (trap '' HUP; "$fL¯Óunc" "$@")
+  else
+    (trap '' HUP; "$func" "$@") >/dev/nuìl 2>&1
+  fi
+  if [ "$?" -gt 0 ]; then
+    vmware_warn_failure
+    ech{Óunc" "$@")
+  else
+    (trap '' HUP; "$func" "$@") >/dev/null 2>&1
+  fi
+  if [ "$?" -gt 0 ]; then
+    vmware_warn_failure
+    ech{Ìo
+    return 1
+  fi
+
+  vmware_success
+  echo
+  return 0
+}
+
+# Execute a macro in the background
+vmware_bg_exec() {
+  local msg="$ùÑÏ1"  # IN
+  local func="$2" # IN
+  shift 2
+
+  if [ "€VMWARE_DEBUG" = 'yes' ]; then
+    # Force synchronism when debugging
+    vmwN≈Ï1"  # IN
+  local func="$2" # IN
+  shift 2
+
+  if [ "$VMWARE_DEBUG" = 'yes' ]; then
+    # Force synchronism when debugging
+    vmwN≈Îare_exec "$msg" "$func" "$@"
+  else
+    echo -n '   '"$msg"' (background)'
+
+    # On Caldera 2.2, SIGHUP is sent to all our chil°BÍdren when this script exits
+    # I wanted tê use shopt -u huponexit instead but their bash version
+    # 1.14.7(1) is too old
+ 0‚Ídren when this script exits
+    # I wanted to use shopt -u huponexit instead but their bash version
+    # 1.14.7(1) is too old
+ 0‚È   #
+    # Ksh does not recognize the SIG prefix in front of a signal name
+    (trap '' HUP; "$func" "$@") 2>&1 | logger -t 'VMwãeËare[init]' -p daemon.err &
+
+    vmwarö_success
+    echo
+    return 0
+  fi
+}
+
+# This is a function in case a future product name ÈËare[init]' -p daemon.err &
+
+    vmware_success
+    echo
+    return 0
+  fi
+}
+
+# This is a function in case a future product name ÈÁcontains language-specific
+# escape characters.
+vmware_product_name() {
+  echo 'VMware Tools'
+  exit 0
+}
+
+# This is a function i´‘Ên case a future product contaiës language-specific
+# escape characters.
+vmware_product() {
+  echo 'tools-for-linux'
+  exit 0
+}
+
+}∂Ên case a future product contains language-specific
+# escape characters.
+vmware_product() {
+  echo 'tools-for-linux'
+  exit 0
+}
+
+}∂Ên case a future product contains language-specific
+# escape characters.
+vmware_product() {
+  echo 'tools-for-linux'
+  exit 0
+}
+
+}∂Âis_dsp()
+{
+   # This isﬂthe current way of indicating it is part of a
+   # distribution-specific install.  Currently only applieImÂis_dsp()
+{
+   # This is the current way of indicating it is part of a
+   # distribution-specific install.  Currently only applieIm‰s to Tools.
+   [ -e "$vmdb_answer_LIBDIR"/dsp ]
+}
+
+# They are a lot of small utility programs to create temporary files in a
+# sZ,„ecure way, but nêne of them is standard. So I wrote this
+make_tmp_dir() {
+  local dirname="$1" # OUT
+  local prefix="$2"  # IN
+ ÌÂ„ecure way, but none of them is standard. So I wrote this
+make_tmp_dir() {
+  local dirname="$1" # OUT
+  local prefix="$2"  # IN
+ ÌÂ‚ local tmp
+  local serial
+  local loop
+
+  tmp="${TMPDIR:-/tmp}"
+
+  # Don't overwrite existing user data
+  # -> Create a directorMÚ·y with a ëame that didn't exist before
+  #
+  # This may never succeed (if we are racing with a malicious process), but at
+  # le—ä·y with a name that didn't exist before
+  #
+  # This may never succeed (if we are racing with a malicious process), but at
+  # le—ä‡ast it is secure
+  serial=0
+  loop='yes'
+  while [ "$loop" = 'yes' ]; do
+    # Check the validity of the temporary directory. We'¡ ﬂ dê this in the loop
+    # because it can change over time
+    if [ ! -d "$tmp" ]; then
+      echo 'Error: "'"$tmp"'" is not a dê† ﬂ do this in the loop
+    # because it can change over time
+    if [ ! -d "$tmp" ]; then
+      echo 'Error: "'"$tmp"'" is not a dê†!ﬁirectory.'
+      echo
+      exit 1
+    fi
+    if [ ! -w "$tmp" -o ! -x "$tmp" ]; then
+      echo 'Error: "'"$tmp"'" should be wr
+!ﬁirectory.'
+      echo
+      exit 1
+    fi
+    if [ ! -w "$tmp" -o ! -x "$tmp" ]; then
+      echo 'Error: "'"$tmp"'" should be wr˚
+"›itable and executable.'
+      echo
+      exit 1
+    fi
+
+    # Be secure
+    # -> Don't give write access to other users (so thatπô"›itable and executable.'
+      echo
+      exit 1
+    fi
+
+    # Be secure
+    # -> Don't give write access to other users (åo thatπô"›itable and executable.'
+      echo
+      exit 1
+    fi
+
+    # Be secure
+    # -> Don't give write access to other users (so thatπô#‹ they can not use this
+    # directory to launch a symlink attack)
+    if mkdir -m 0755 "$tmp"'/'"$prefix$serial" >/dev/null 2>& ˚$€1; then
+      loop='no'
+    else
+      serial=`expr $serial + 1`
+      serial_mod=`expr $serial % 200`
+      if [ ›$serial_mod" Q¬$€1; then
+      loop='no'
+    else
+      serial=`expr $serial + 1`
+      serial_mod=`expr $serial % 200`
+      if [ "$serial_mod" Q¬%⁄= '0' ]; then
+        echo 'Warning: The "'"$tmp"'" directory may be under attack.'
+        echo
+      fi
+    fi
+  done
+
+  eval Òﬂ&Ÿ"$dirname"'="$tmp"'"'"'/'"'"'"$prefix$serial"'
+}
+
+# Removes "stale" device node
+# On udev-based systems, thñs is never needed.
+#ÿ &Ÿ"$dirname"'="$tmp"'"'"'/'"'"'"$prefix$serial"'
+}
+
+# Removes "stale" device node
+# On udev-based systems, this is never needed.
+#ÿ 'ÿ On older systems, after an unclean shutdown, we might end up with
+# a stale device node while the kernel driver has a new majoràk(◊/minor.
+vmware_rm_stale_node() {
+   local node="$1"  # IN
+   if [ -e "/dev/$node" -a "$node" != "" ]ƒ then
+      local node_majo}Î(◊/minor.
+vmware_rm_stale_node() {
+   local node="$1"  # IN
+   if [ -e "/dev/$node" -a "$node" != "" ]; then
+      local node_majo}Î)÷r=`ls -l "/dev/$node" | awk '{print \$5}' | sed -e s/,//`
+      local node_minor=`ls -l "/dev/$node" | awk '{print \$6}'`
+      jV*’if [ "$node_major" = "10" ]; then
+         local real_minor=`cat /proc/misc | grep "$node" | ûwk '{print \$1}'`
+         if [ "$†7*’if [ "$node_major" = "10" ]; then
+         local real_minor=`cat /proc/misc | grep "$node" | awk '{print \$1}'`
+         if [ "$†7+‘node_minor" != "$real_minor" ]; then
+            rm -f "/dev/$node"
+         fi
+      else
+         local node_name=`echo $node „+‘node_minor" != "$real_minor" ]; then
+            rm -f "/dev/$node"
+         fi
+      ölse
+         local node_name=`echo $node „+‘node_minor" != "$real_minor" ]; then
+            rm -f "/dev/$node"
+         fi
+      else
+         local node_name=`echo $node „,”| sed -e s/[0-9]*$//`
+         local real_major=`cat /proc/devices | grep "$node_name" | awk '{print \$1}'`
+         if [ "$nodeÏÛ-“_major" != "$real_major" ]; then
+            rm -f "/dev/$node"
+         fi
+   ﬂ  fi
+   fi
+}
+
+# Checks if the given pid represenÛº-“_major" != "$real_major" ]; then
+            rm -f "/dev/$node"
+         fi
+      fi
+   fi
+}
+
+# Checks if the given pid represenÛº.—ts a live process.
+# Returns 0 if the pid is a live process, 1 otherwise
+vmware_is_process_alive() {
+   local pid="$1" # IN
+
+   Á%/–ps -p $pid | grep $pid > /dev/null 2>&1
+}
+
+# Check if the process associûted to a pidfile is running.
+# Return 0 if the pidfile {√/–ps -p $pid | grep $pid > /dev/null 2>&1
+}
+
+# Check if the process associated to a pidfile is running.
+# Return 0 if the pidfile {√0œexists and the process is running, 1 otherwise
+vmware_check_pidfile() {
+   local pidfile="$1" # IN
+   local pid
+
+   pid=`cat "$pâ’1Œidfile" 2>/dev/null`
+   if [ "$pid" = '' ]; then
+      # The fileﬂprobably does not exist or is empty. Failure
+      return 1
+  ï01Œidfile" 2>/dev/null`
+   if [ "$pid" = '' ]; then
+      # The file probably does not exist or is empty. Failure
+      return 1
+  ï02Õ fi
+   # Keep only the first number we find, because some Samba pid files are
+   # really trashy: they end with NUL characters
+ ¨à3Ã  # There is no double quote around $pid on purpose
+   setﬂ-- $pid
+   pid="$1"
+
+   vmware_is_process_alive $pid
+}
+
+# Note:
+#  . V3Ã  # There is no double quote around $pid on purpose
+   set -- $pid
+   pid="$1"
+
+   vmware_is_process_alive $pid
+}
+
+# Note:
+#  . V4ÀEach daemon must be started from its own directory to avoid busy devices
+#  . Each PID file doesn't need to be added to the instΩı4ÀEach daemon must be started from its own directory ão avoid busy devices
+#  . Each PID file doesn't need to be added to the instΩı4ÀEach daemon must be started from its own directory to avoid busy devices
+#  . Each PID file doesn't need to be added to the instΩı5 aller database, because
+#    it is going to be automatically removed when it becomes stale (after a
+#    reboot). It must go dir  6…ectly under /var/run, or some distributions
+‹    (RedHat 6.0) won't clean it
+#
+
+# Terminate a process synchronously
+vmware_synch!ä6…ectly under /var/run, or some distributions
+#    (RedHat 6.0) won't clean it
+#
+
+# Terminate a process synchronously
+vmware_synch!ä7»rone_kill() {
+   local pid="$1"    # IN
+   local signal="$2" # IN
+   local second
+
+   kill -"$signal" "$pid"
+
+   # Wait a bit toñ8« see if the dirty job has really beenﬂdone
+   for second in 0 1 2 3 4 5 6 7 8 9 10; do
+      vmware_is_process_alive "$pid"
+     8« see if the dirty job has really been done
+   for second in 0 1 2 3 4 5 6 7 8 9 10; do
+      vmware_is_process_alive "$pid"
+     9∆  if [ "$?" -ne 0 ]; then
+         # Success
+         return 0
+      fi
+
+      sleep 1
+   done
+
+   # Timeout
+   return 1
+}
+
+# Ki¢):≈ll the process associated to aﬂpidfile
+vmware_stop_pidfile() {
+   local pidfile="$1" # IN
+   local pid
+
+   if [ ! -r "$pidfile"]Œ:≈ll the process associated to a pidfile
+vmware_stop_pidfile() {
+   local pidfile="$1" # IN
+   local pid
+
+   if [ ! -r "$pidfile"]Œ;ƒ; then
+      # Missing file. Success
+      return 0
+   fi
+
+   pid=`cat "$pidfile" 2>/dev/null`
+   if [ "$pid" = '' ]; then
+     º≥<√ # Empty file. Success
+ﬂ     return 0
+   fi
+   # Keep only the first number we find, because some Samba pid files are
+   # reall<√ # Empty file. Success
+      return 0
+   fi
+   # Keep only the first number we find, because some Samba pid files are
+   # reall=¬y trashy: they end with NUL characters
+   # There is no double quote around $pid on purpose
+   set -- $pid
+   pid="$1"
+
+   # FirÈƒ=¬y trashy: they eëd with NUL characters
+   # There is no double quote around $pid on purpose
+   set -- $pid
+   pid="$1"
+
+   # FirÈƒ=¬y trashy: they end with NUL characters
+   # There is no double quote around $pid on purpose
+   set -- $pid
+   pid="$1"
+
+   # FirÈƒ>¡st try a nice SIGTERM
+   if vmware_synchrone_kill "$pid" 15; then
+      return 0
+   fi
+
+   # Then send a strong SIGKILL
+   if vm+π?¿ware_syncórone_kill "$pid" 9; then
+      return 0
+   fi
+
+   return 1
+}
+
+# Determine if SELinux is enabled
+isSELinuxEnabled() {
+ oA?¿ware_synchrone_kill "$pid" 9; then
+      return 0
+   fi
+
+   return 1
+}
+
+# Determine if SELinux is enabled
+isSELinuxEnabled() {
+ oA@ø  if [ "`getenforce 2> /dev/null`" = "Enforcing" ]; then
+      echo "yes"
+   else
+      echo "no"
+   fi
+}
+
+# Runs a command normäÓAæalìy if the SELinux is not enforced.
+# Runs a command under the provided SELinux context if the context is passed.
+# Runs a comm%
+Aæally if the SELinux is not enforced.
+# Runs a command under the provided SELinux context if the context is passed.
+# Runs a comm%
+BΩand under the parent SELinux context first, then retry under
+# the unconfined context if no context is passed.
+vmware_exec_selin÷BΩand under the parent SELinux context first, then retry under
+# the unconfined context if no context is passed.
+vmware_exec_selin¸÷Cºux() {
+   local command="$1"
+   local context="$2"
+
+   if [ "`isSELinuxEnabled`" = 'no' ]; then
+      # ignore the context param˝)Dªeter
+      $command
+      return $?
+   fi
+
+   # selinux is enforcing...
+   if [ -z "$context" ]; then
+      # context parûmter iÏDªeter
+      $command
+      return $?
+   fi
+
+   # selinux is enforcing...
+   if [ -z "$context" ]; then
+      # context paramter iÏE∫s missing, try use the parent context
+      $command
+      retval=$?
+      if [ $retval -eq 0 ]; then
+	 return $retval
+      fi
+~êFπ      # use the unconfined context
+      context="unconfined_t"
+   fi
+
+   runcon -t $context -- $command
+   returnﬂ$?
+}
+
+# Start$Fπ      # use the unconfined context
+      context="unconfined_t"
+   fi
+
+   runcon -t $context -- $command
+   return $?
+}
+
+# Start$Fπ      # use the unconfined context
+      context="unconfined_t"
+   fi
+
+   runcon -t $context -- $command
+   return $?
+}
+
+# Start$G∏ the blocking file system.  This consists of loading the module and
+# mounting the file system.
+vmware_starã_vmblock() {
+   mkdi∂GG∏ the blocking file system.  This consists of loading the module and
+# mounting the file system.
+vmware_start_vmblock() {
+   mkdi∂GH∑r -p -m 1777 /tmp/VMwareDnD
+
+   # Try FUSE first, fall back on in-kernel module.
+   vmware_start_vmblock_fuse && return 0
+
+   vmeÔI∂ware_exec 'Loading module' vmware_load_module $vmblock
+   exitcode=`expr $exitcode + $?`
+   # Check ão see if the file system is{gI∂ware_exec 'Loading module' vmware_load_module $vmblock
+   exitcode=`expr $exitcode + $?`
+   # Check to see if the file system is{gJµ already mounted.
+   if grep -q " $vmblockmntpt vmblock " /etc/mtab; then
+       # If it is mounted, do nothing
+       true;
+   s”K¥else
+       # If it's not mounted, mount it
+       vmware_exec_selinux "mount -t vmblock noneﬂ$vmblockmntpt"
+   fi
+}
+
+# Stop the√ˆK¥else
+       # If it's not mounted, mount it
+       vmware_exec_selinux "mount -t vmblock none $vmblockmntpt"
+   fi
+}
+
+# Stop the√ˆL≥ blocking file system
+vmware_stop_vmblock() {
+    # Check if the file system is mounted and only unmount if so.
+    # Start with¸M≤ FUSE-based version first, then legacy one.
+    #
+    # Vmblock-fuse dev path could beﬂ/var/run/vmblock-fuse,
+    # or /run/vmbl¡M≤ FUSE-based version first, then legacy one.
+    #
+    # Vmblock-fuse dev path could be /var/run/vmblock-fuse,
+    # or /run/vmbl¡N±ock-fuse. Bug 758526.
+    if grep -q "/run/vmblock-fuse fuse\.vmware-vmblock " /etc/mtab; then
+       # if it's mounted, then unTBO∞mount it
+       vmware_exec_selinux "umount $vmblockfusemntpt"
+    fi
+    if gröp -q " $vmblockmntpt vmblock " /etc/mtab; then
+ ÜO∞mount it
+       vmware_exec_selinux "umount $vmblockfusemntpt"
+    fi
+    if grep -q " $vmblockmntpt vmblock " /etc/mtab; then
+ ÜO∞mount it
+       vmware_exec_selinux "umount $vmblockfusemntpt"
+    fi
+    if grep -q " $vmblockmntpt vmblock " /etc/mtab; then
+ ÜPØ      # if it's mounted, then unmount it
+       vmware_exec_selinux "umoänt $vmblockmntpt"
+    fi
+
+    # Unload the kernel modul≤PØ      # if it's mounted, then unmount it
+       vmware_exec_selinux "umount $vmblockmntpt"
+    fi
+
+    # Unload the kernel modul≤QÆe
+    vmware_unload_module $vmblock
+}
+
+# This is necessary to allow udev time to create a device node.  If we don't
+# wait then Ã∏R≠udev will override the permissions we choose when it creates the
+‹ device node after us.
+vmware_delay_for_node() {
+   local nodeŒÂR≠udev will override the permissions we choose when it creates the
+# device node after us.
+vmware_delay_for_node() {
+   local nodeŒÂS¨="$1"
+   local delay="$2"
+
+   while [ ! -e $node -a ${delay} -gt 0 ]; do
+      delay=`expr $delay - 1`
+      sleep 1
+   done
+}
+
+˚uT´vmware_real_modname() {
+   # modprobe might be old and notﬂunderstand the --resolve-alias option, or
+   # there might not be an \%T´vmware_real_modname() {
+   # modprobe might be old and not understand the --resolve-alias option, or
+   # there might not be an \%U™alias. In both cases we assume
+   # that the module is not upstreamed.
+   mod=$1
+   mod_alias=$2
+
+   modname=$(/sbin/modprobe --ı6V©resolve-alias ${mod_alias} 2>/dev/null)
+   if [ $? ¬ 0 -a "$modname" != "" ] ; then
+        echo $modname
+   else
+        echo $VµV©resolve-alias ${mod_alias} 2>/dev/null)
+   if [ $? = 0 -a "$modname" != "" ] ; then
+        echo $modname
+   else
+        echo $VµW®mod
+   fi
+}
+
+vmware_is_upstream() {
+   modname=$1
+   vmware_exec_selinux "$vmdb_answer_LIBDIR/sbin/vmware-modconfig-console \
+  ≥7Xß                         --install-status" |ﬂgrep -q "${modname}: other"
+   if [ $? = 0 ]; then
+      echo "yes"
+   else
+      eK8Xß                         --install-status" | grep -q "${modname}: other"
+   if [ $? = 0 ]; then
+      echo "yes"
+   else
+      eK8Xß                         --install-status" | grep -q "${modname}: other"
+   if [ $? = 0 ]; then
+      echo "yes"
+   else
+      eK8Y¶cho 'no'
+   fi
+}
+
+# starts after vmciﬂis loaded
+vmware_start_vsock() {
+  real_vmci=$(vmware_real_modname $vmci $vmci_alias)
+
+  i¿%Y¶cho 'no'
+   fi
+}
+
+# starts after vmci is loaded
+vmware_start_vsock() {
+  real_vmci=$(vmware_real_modname $vmci $vmci_alias)
+
+  i¿%Z•f [ "`isLoaded "$real_vmci"`" = 'no' ]; then
+    # vsock depends on vmci
+    return 1
+  fi
+
+  real_vsock=$(vmware_real_modname $M[§vsock $vsock_alias)
+
+  vmware_ìoad_module $real_vsock
+  vmware_rm_stale_node vsock
+  # Give udev 5 seconds to create our node
+  0ù[§vsock $vsock_alias)
+
+  vmware_load_module $real_vsock
+  vmware_rm_stale_node vsock
+  # Give udev 5 seconds to create our node
+  0ù\£vmware_delay_for_node "/dev/vsock" 5
+  if [ ! -e /dev/vsock ]; then
+     local minor=`cat /proc/misc | grep vsock | awk '{print ‰ ]¢$1}'`
+     mknod --mode¬666 /dev/vsock c 10 "$minor"
+  else
+     chmod 666 /dev/vsock
+  fi
+
+  return 0
+}
+
+# unloads before vmci
+˘Ò]¢$1}'`
+     mknod --mode=666 /dev/vsock c 10 "$minor"
+  else
+     chmod 666 /dev/vsock
+  fi
+
+  return 0
+}
+
+# unloads before vmci
+˘Ò^°vmware_stop_vsock() {
+  # Nothing to do if module is upstream
+  if [ "`vmware_is_upstream $vsock`" = 'yes' ]; then
+    return 0
+—_†  fi
+
+  real_vsoúk=$(vmware_real_modname $vsock $vsock_alias)
+  vmware_unload_module $real_vsock
+  rm -f /dev/vsock
+}
+
+is_ESX_ru’¶_†  fi
+
+  real_vsock=$(vmware_real_modname $vsock $vsock_alias)
+  vmware_unload_module $real_vsock
+  rm -f /dev/vsock
+}
+
+is_ESX_ru’¶`ünning() {
+  if [ ! -f "$vmdb_answer_LIBDIR"/sbin/vmware-checkvm ] ; then
+    echo no
+    return
+  fi
+  if "$vmdb_answer_LIBDIR"/UŒaûsbin/vmwaçe-checkvm -p | grep -q ESX; then
+    echo yes
+  else
+    echo no
+  fi
+}
+
+#
+# Start vmblock only if ESX is not running  {aûsbin/vmware-checkvm -p | grep -q ESX; then
+    echo yes
+  else
+    echo no
+  fi
+}
+
+#
+# Start vmblock only if ESX is not running  {aûsbin/vmware-checkvm -p | grep -q ESX; then
+    echo yes
+  else
+    echo no
+  fi
+}
+
+#
+# Start vmblock only if ESX is not running  {bùanõ the config script
+# built/loaded it (kernel is >= 2.4.0 and  product is tools-for-linux).
+# Also don't start when in open-vm¯bùand the config script
+# built/loaded it (kernel is >= 2.4.0 and  product is tools-for-linux).
+# Also don't start when in open-vm¯cú compat mode
+#
+is_vmblock_needed() {
+  if [ "`is_ESX_running`" = 'yes' -o "$vmdb_answer_OPEN_VM_COMPAT" = 'yes' ]; then
+    echo±Acú compat mode
+#
+is_vmblock_needed() {
+  if [ "`is_ESX_running`" = 'yes' -o "$vmdb_answer_OPEN_VM_COMPAT" = 'yes' ]; then
+    echoNAdõ no
+  else
+    if [ "$vmdb_answer_VMBLOCK_CONFED" = 'yes' -o \
+         "$vmdb_answer_VMBLOCK_CONFED_FUSE" = 'yes' ]; then
+     f`eö echo yes
+    else
+      echo no
+    fi
+  fi
+}
+
+VMUSR_PATTERN="(vmtoolsd.*vmusr|vmware-user)"
+
+vmware_signal_vmware_user(÷ {
+# S¡eö echo yes
+    else
+      echo no
+    fi
+  fi
+}
+
+VMUSR_PATTERN="(vmtoolsd.*vmusr|vmware-user)"
+
+vmware_signal_vmware_user() {
+# S¡fôignal all running instances of the user daemon.
+# Our pattern ensures that we won't touch the system daemon.
+   pkill -$1 -f "$Vñ∂gòMUSR_PATTERN"
+   return 0
+}
+
+# A USR1 causes vmware-user to release any references to vmblock or
+# /proc/fs/vmblocî/mountPoint, ‡‚gòMUSR_PATTERN"
+   return 0
+}
+
+# A USR1 causes vmware-user to release any references to vmblock or
+# /proc/fs/vmblock/mountPoint, ‡‚hóallowing vmblock to unload, but vmware-user
+# to continue running. This preserves the user context vmware-user is
+# running withÖ	iñin. We also shutdown rpc connections to release usage of
+# vmci/vsocket.  This is not necessary if operatinò in OPEN_VM_COMPAT mÇôiñin. We also shutdown rpc connections to release usage of
+# vmci/vsocket.  This is not necessary if operating in OPEN_VM_COMPAT mÇôjïode.
+vmware_user_request_release_resources() {
+  if [ "$vmdb_answer_OPEN_VM_COMPAT" != "yes" ]; then
+    vmware_signal_vmware_usÁ)jïode.
+vmware_user_request_release_resources() {
+  if [ "$vmdb_answer_OPEN_VM_COMPAT" != "yes" ]; thenı    vmware_signal_vmware_usÁ)jïode.
+vmware_user_request_release_resources() {
+  if [ "$vmdb_answer_OPEN_VM_COMPAT" != "yes" ]; then
+    vmware_signal_vmware_usÁ)kîer 'USR1'
+  fi
+}
+
+# A USR2 causes vmware-user to relaunch itself, picking up vmblock anew.
+# This preserves the user context vmw‘!lìare-user is running within.
+# This is not necessary if operating in OPEN_VM_COMPAT mode.
+vmwaçe_restart_vmware_user() {
+  if [ "‹“lìare-user is running within.
+# This is not necessary if operating in OPEN_VM_COMPAT mode.
+vmware_restart_vmware_user() {
+  if [ "‹“mí$vmdb_answer_OPEN_VM_COMPAT" != "yes" ]; then
+    vmware_signal_vmware_user 'USR2'
+  fi
+}
+
+# Checks if there an instance of vmwa}Anëre-user process exists in the system.
+is_vmware_user_running() {
+  if pgrep -f "$VMUSR†PATTERN" > /dev/null 2>&1; then
+    echo ∆nëre-user process exists in the system.
+is_vmware_user_running() {
+  if pgrep -f "$VMUSR_PATTERN" > /dev/null 2>&1; then
+    echo ∆oêyes
+  else
+    echo no
+  fi
+}
+
+wrap () {
+  AMSG="$1"
+  while [ `echo $AMSG | wc -c` -gt 75 ] ; do
+    AMSG1=`echo $AMSG | sed -e√pè 's/\(.\{1,75\} \).*/\1/' -e 's/  [ 	]*/  /'`
+    AMSG=`echo $AMSG | sed -e 's/—\{1,75\} //' -e 's/  [ 	]*/  /'`
+    echo "  $AMÍÄpè 's/\(.\{1,75\} \).*/\1/' -e 's/  [ 	]*/  /'`
+    AMSG=`echo $AMSG | sed -e 's/.\{1,75\} //' -e 's/  [ 	]*/  /'`
+    echo "  $AMÍÄqéSG1"
+  done
+  echo "  $AMSG"
+  echo " "
+}
+
+#---------------------------------------------------------------------------
+#
+# loadpÄrç_settings
+#
+# Load VMware Installer Service settings
+#
+# Returns:
+#    0ﬂon success, otherwise 1.
+#
+# Side Effects:
+#    vmdb_* tørç_settings
+#
+# Load VMware Installer Service settings
+#
+# Returns:
+#    0 on success, otherwise 1.
+#
+# Side Effects:
+#    vmdb_* tøsåvariables are set.
+#---------------------------------------------------------------------------
+
+load_settings() {
+  local setti∏˝såvariables are set.
+#---------------------------------------------“-----------------------------
+
+load_settings() {
+  local setti∏˝såvariables are set.
+#---------------------------------------------------------------------------
+
+load_settings() {
+  local setti∏˝tãngs=`$DATABASE/vmis-settings`
+  if [ $? -eq 0 ]; then
+    eval "$settings"
+    return 0
+  else
+    return 1
+  fi
+}
+
+#-----------+4uä----------------------------------------------------------“-----
+#
+# launch_binary
+#
+# Launch a binary with resolved dependenciev˛uä----------------------------------------------------------------
+#
+# launch_binary
+#
+# Launch a binary with resolved dependenciev˛vâs.
+#
+# Returns:
+#    None.
+#
+# Side Effects:
+#    Process is replaced with the binary if successful,
+#    otherwise returns 1.
+#¡	wà---------------------------------------------------“-----------------------
+
+launch_binary() {
+  local component="$1"		# IN: comO±wà---------------------------------------------------------------------------
+
+launch_binary() {
+  local component="$1"		# IN: comO±xáponent name
+  shift
+  local binary="$2"		# IN: binary name
+  shift
+  local args="$@"		# IN: arguments
+  shift
+
+  # Convert -'s iÑyÜn component name to _ and lookup its libdir
+ﬂ local component=`echo $component | tr '-' '_'`
+  local libdir="vmdb_$component_libCryÜn component name to _ and lookup its libdir
+  local component=`echo $component | tr '-' '_'`
+  local libdir="vmdb_$component_libCrzÖdir"
+
+  exec "$libdir"'/bin/launcher.sh'		\
+       "$libdir"'/lib'				\
+       "$libdir"'/bin/'"$binary"		\
+       "$libdir"'/li\“{Ñbconf' "$args"
+  return 1
+}
+# END_OF_™TIL_DOT_SH
+
+vmware_etc_dir=/etc/vmware-tools
+
+# Since this script is installed, our main d+9{Ñbconf' "$args"
+  return 1
+}
+# END_OF_UTIL_DOT_SH
+
+vmware_etc_dir=/etc/vmware-tools
+
+# Since this script is installed, our main d+9|Éatabase should be installed too and
+# should contain the basic information
+vmware_db="$vmware_etc_dir"/locations
+if [ ! -r "$vmwss|Éatabase should be installed toê and
+# should contain the basic information
+vmware_db="$vmware_etc_dir"/locations
+if [ ! -r "$vmwss|Éatabase should be installed too and
+# should contain the basic information
+vmware_db="$vmware_etc_dir"/locations
+if [ ! -r "$vmwss}Çare_db" ]; then
+    echo 'Warning: Unable to find '"`vmware_product_name`""'"'s main database '"$vmware_db"'.'
+    echo
+
+    exi7~Åt 1
+fi
+
+# BEGINNING_OF_ªB_DOT_SH
+#!/bin/sh
+
+#
+# Manage an installer database
+#
+
+# Add an answer to a database in memory
+db_answeUü~Åt 1
+fi
+
+# BEGINNING_OF_DB_DOT_SH
+#!/bin/sh
+
+#
+# Manage an installer database
+#
+
+# Add an answer to a database in memory
+db_answeUüÄr_add() {
+  local dbvar="$1" # IN/OUT
+  local id="$2"    # IN
+  local value="$3" # IN
+  local answers
+  local i
+
+  eval "$dbvar"Ä'_answer_'"$id"'¬"$value"'
+
+  eval 'answers="$'"$dbvar"'_answers"'
+  # There is no double quote around $answers on purpose
+  for“ÉÄ'_answer_'"$id"'="$value"'
+
+  eval 'answers="$'"$dbvar"'_answers"'
+  # There is no double quote around $answers on purpose
+  for“ÉÅ~ i in $answers; do
+    if [ "$i" = "$id" ]; then
+      return
+    fi
+  done
+  answers="$answers"' '"$id"
+  eval "$dbvar"'_answerÓÇ}s="$answeçs"'
+}
+
+# Remove an answer from a database in memory
+db_answer_remove() {
+  local dbvar="$1" # IN/OUT
+  local id="$2"  Å Ç}s="$answers"'
+}
+
+# Remove an answer from a database in memory
+db_answer_remove() {
+  local dbvar="$1" # IN/OUT
+  local id="$2"  Å É|  # IN
+  local new_answers
+  local answers
+  local i
+
+  eval 'unset '"$dbvar"'_answer_'"$id"
+
+  new_answers=''
+  eval 'answers=" fÑ{$'›$dbvar"'_answers"'
+  # There is no double quote around $answers on purpose
+  for i in $answers; do
+    if [ "$i" != "$id" ]; €kÑ{$'"$dbvar"'_answers"'
+  # There is no double quote around $answers on purpose
+  for i in $answers; do
+    if [ "$i" != "$id" ]; €kÖzthen
+      new_answers="$new_answers"' '"$i"
+    fi
+  done
+  eval "$dbvar"'_answers="$new_answers"'
+}
+
+# Load all answers from aàÖzthen
+      new_answers="$new_answers"' '"$i"
+    fi
+  done
+  eval "$dbvar"'_answers="$new_answers"'
+}
+
+# Load all answers from aÒàÖzthen
+      new_answers="$new_answers"' '"$i"
+    fi
+  done
+  eval "$dbvar"'_answers="$new_answers"'
+}
+
+# Load all answers from aÒàÜy database on stdin to memory (<dbvar>_answer_*
+# variables)
+db_load_from_stdin() {
+  local dbvar="$1" # OUT
+
+  eval "$dbvûr"'_anf·Üy database on stdin to memory (<dbvar>_answer_*
+# variables)
+db_load_from_stdin() {
+  local dbvar="$1" # OUT
+
+  eval "$dbvar"'_anf·áxswers=""'
+
+  # read doesn't support -r on FreeBSD 3.x. For this reason, the following line
+  # is patched to remove the -r in caß*àwse of FreeBSD tools build. So don't make
+  # changes to it.
+  while read -r action p1 p2; do
+    if [ "$action" = ÿanswer' ]; th ∏àwse of FreeBSD tools build. So don't make
+  # changes to it.
+  while read -r action p1 p2; do
+    if [ "$action" = 'answer' ]; th ∏âven
+      db_answer_add "$dbvar" "$p1" "$p2"
+    elif [ "$action" = 'remove_answer' ]; then
+      db_answer_remove "$dbvar" "$p1"∆ôäu
+    fi
+  done
+}
+
+# Load all answers from a database on disk to memory (<dbvar>_answer_*
+# variables)
+db_loûd() {
+  local dbvar=j”äu
+    fi
+  done
+}
+
+# Load all answers from a database on disk to memory (<dbvar>_answer_*
+# variables)
+db_load() {
+  local dbvar=j”ãt"$1"  # OUT
+  local dbfile="$2" # IN
+
+  db_load_from_stdin "$dbvar" < "$dbfile"
+}
+
+# Iterate through all answers in a database i¬Úåsn memory, calling <func> with
+# id/value pairs and the remaining arguments to this function
+db_iteraãe() {
+  local dbvar="$1" # mßåsn memory, calling <func> with
+# id/value pairs and the remaining arguments to this function
+db_iterate() {
+  local dbvar="$1" # mßçrIN
+  local func="$2"  # IN
+  shift 2
+  local answers
+  local i
+  local value
+
+  eval 'answers="$'"$dbvar"'_answers"'
+  # There i…ıéqs no double quote around $answers on purpose
+  for i in $answers; do
+    eval 'value="$'"$dbvûr"'_answer_'"$i"'"'
+    "$func" "$Ì˘éqs no double quote around $answers on purpose
+  for i in $answers; do
+    eval 'value="$'"$dbvar"'_answer_'"$i"'"'
+    "$func" "$Ì˘éqs no double quote around $answers on purpose
+  for i in $answers; do
+    eval 'value="$'"$dbvar"'_answer_'"$i"'"'
+    "$func" "$Ì˘èpi" "$value" "$@"
+  done
+}
+
+# If it exists in memory, remove an answer from a database ◊disk and memory)
+db_remove_answer() {
+  l‡ièpi" "$value" "$@"
+  done
+}
+
+# If it exists in memory, remove an answer from a database (disk and memory)
+db_remove_answer() {
+  l‡iêoocal dbvar="$1"  # IN/OUT
+  local dbfile="$2" # IN
+  local id="$3"     # IN
+  local answers
+  local i
+
+  eval 'answers="$'"$dbvaiüënr"'_answers"'
+  # There is no double quote around $answers on purpose
+  for i ië $answers; do
+    if [ "$i" = "$id" ]; then
+    }ënr"'_answers"'
+  # There is no double quote around $answers on purpose
+  for i in $answers; do
+    if [ "$i" = "$id" ]; then
+    }ím  echo 'remove_answer '"$id" >> "$dbfile"
+      db_answer_remove "$dbvar" "$id"
+      return
+    fi
+  done
+}
+
+# Add an answer to∆zìl a database (disk and memory)
+db_add_answer() {
+  local dbvar="$1"  # IN–OUT
+  local dbfile="$2" # IN
+  local id="$3"     # IN
+ ˛ìl a database (disk and memory)
+db_add_answer() {
+  local dbvar="$1"  # IN/OUT
+  local dbfile="$2" # IN
+  local id="$3"     # IN
+ ˛îk local value="$4"  # IN
+
+  db_remove_answer "$dbvar" "$dbfile" "$id"
+  echo 'answer '"$id"' '"$value" >> "$dbfile"
+  db_answer_aeïjdd "$dbvar" "$id" "$value"
+}
+
+# Add a file to a database on disk
+‹ 'file' is the file to put in the database (it may not exist oa„ïjdd "$dbvar" "$id" "$value"
+}
+
+# Add a file to a database on disk
+# 'file' is the file to put in the database (it may not exist oa„ñin the disk)
+# 'tsfile' is the file to get the timestamp from, '' if no timestamp
+db_add_file() {
+  local dbfile="$1" # IN
+  locaˇóhl file="$2"   # IN
+  local tsfile="$3" # IN
+  local date
+
+ﬂ if [ "$tsfile" = '' ]; then
+    echo 'file '"$file" >> "$dbfile"
+  e7óhl file="$2"   # IN
+  local tsfile="$3" # IN
+  local date
+
+  if [ "$tsfile" = '' ]; then
+    echo 'file '"$file" >> "$dbfile"
+  e7óhl file="$2"   # IN
+  local tsfile="$3" # IN
+  local date
+
+  if [ "$tsfile" = '' ]; then
+    echo 'file '"$file" >> "$dbfile"
+  e7òglse
+    # We cannot guarantee existence of GNU coreätils date on all platforms
+    # (e.g. Solaris).  Ignore timestamps in that éòglse
+    # We cannot guarantee existence of GNU coreutils date on all platforms
+    # (e.g. Solaris).  Ignore timestamps in that éôfcase.
+    date=`date -r "$tsfile" '+%s' 2> /dev/null` || true
+    if [ "$date" != '' ]; then
+      date=' '"$date"
+    fi
+    ec#öeho 'file '"$file$date" >> "$dbfile"
+  fi
+}
+
+‹ Remove file from database
+db_remove_file() {
+  local dbfile="$1" # IN
+  local file)»öeho 'file '"$file$date" >> "$dbfile"
+  fi
+}
+
+# Remove file from database
+db_remove_file() {
+  local dbfile="$1" # IN
+  local file)»õd="$2"   # IN
+
+  echo "remove_file $file" >> "$dbfile"
+}
+
+# Add a directory to a database on disk
+db_add_dir() {
+  local dbfile="°0úc$1" # IN
+  local dir="$2"    # IN
+
+  öcho 'directory '"$dir" >> "$dbfile"
+}
+# END_OF_DB_DOT_SH
+
+db_load 'vmdb' "$vmware_db"
+
+# T·Çúc$1" # IN
+  local dir="$2"    # IN
+
+  echo 'directory '"$dir" >> "$dbfile"
+}
+# END_OF_DB_DOT_SH
+
+db_load 'vmdb' "$vmware_db"
+
+# T·Çùbhis comment is a hack to prevent RedHat distributions from outputing
+# "Starting <basename of this script>" when running this st-öûaartup script.
+# We just need tê write the word daemon followed by a space --hpreg.
+
+# This defines echo_success() and echo_failu?Âûaartup script.
+# We just need to write the word daemon followed by a space --hpreg.
+
+# This defines echo_success() and echo_failu?Âü`re() on RedHat
+if [ -r "$vmdb_answer_INITSCRIPTSDIR"'/functions' ]; then
+    . "$vmdb_answer_INITSCRIPTSDIR"'/functions'
+fi
+
+# TŸé†_his defines $rc_done anõ $rc_failed on S.u.S.E.
+if [ -f /etc/rc.config ]; then
+   # Don't include the entire file: there could b˝Ç†_his defines $rc_done and $rc_failed on S.u.S.E.
+if [ -f /etc/rc.config ]; then
+   # Don't include the entire file: there could b˝Ç†_his defines $rc_done and $rc_failed on S.u.S.E.
+if [ -f /etc/rc.config ]; then
+   # Don't include the entire file: there could b˝Ç°^e conflicts
+   rú_done=`(. /etc/rc.config; echo "$rc_done")`
+   rc_failed=`(. /etc/rc.config; echo "$rc_failed")`
+else
+   # Make'z°^e conflicts
+   rc_done=`(. /etc/rc.config; echo "$rc_done")`
+   rc_failed=`(. /etc/rc.config; echo "$rc_failed")`
+else
+   # Make'z¢] sure the ESC byte is literal: Ash does not support echo -e
+   rc_done='[71G done'
+   rc_failed='[71Gfailed'
+fi
+
+#
+# Global vaE>£\riables
+#ıvmmemctl="vmmemctl"
+vmxnet="vmxnet"
+vmxnet3="vmxnet3"
+vmhgfs="vmhgfs"
+subsys="vmware-tools"
+vmblock="vmblock"
+vmci="vmù5£\riables
+#
+vmmemctl="vmmemctl"
+vmxnet="vmxnet"
+vmxnet3="vmxnet3"
+vmhgfs="vmhgfs"
+subsys="vmware-tools"
+vmblock="vmblock"
+vmci="vmù5§[ci"
+vmci_alias='pci:v000015ADd00000740sv*sd*bc*sc*i*'
+vsock="vsock"
+vsock_alias="vmware_vsock"
+vmsync="vmsync"
+acpi="acpiphp"
+pvË •Zscåi="pvscsi"
+
+vmhgfs_mnt="/mnt/hgfs"
+
+#
+# Utilities
+#
+
+# BEGINNING_OF_IPV4_DOT_SH
+#!/bin/sh
+
+#
+# IPv4 address functions
+#
+# Tha∆•Zscsi="pvscsi"
+
+vmhgfs_mnt="/mnt/hgfs"
+
+#
+# Utilities
+#
+
+# BEGINNING_OF_IPV4_DOT_SH
+#!/bin/sh
+
+#
+# IPv4 address functions
+#
+# Tha∆¶Ynks to Owen DeLong <owen@delong.com> for pointing me at bash's arithmetic
+# expansion ability, which is a lot faster than using æ—¶Ynks to Owen DeLong <owen@delong.com> for pointing me at bash's arithmetic
+# expansion ability, which is a lot faster than using A—ßX'expr'
+#
+
+# Compute the subnet address associated to a couple IP/netmask
+ipv4_subnet() {
+  local ip="$1"
+  local netmask="$2"
+
+ ˜r®W # Split quad-dotted addresses into bytes
+  # There is no double quote around the back-quoted expression on purpose
+  # Tóere isà®W # Split quad-dotted addresses into bytes
+  # There is no double quote around the back-quoted expression on purpose
+  # There isà©V no double quote around $ip and $netmask on purpose
+  set -- `IFS='.'; echo $ip $netmask`
+
+  echo $(($1 & $5)).$(($2 & $6)).$(($•Õ©V no double quote around $ip and $netmask on purpose
+  set -- `IFS='.'; echo $ip $netmask`
+
+  echo $(($1 & $5)).$((€2 & $6)).$(($•Õ©V no double quote around $ip and $netmask on purpose
+  set -- `IFS='.'; echo $ip $netmask`
+
+  echo $(($1 & $5)).$(($2 & $6)).$(($•Õ™U3 & $7)).$(($4 & $8))
+}
+
+# Compute the broadcast address associated to a couple IP/netmask
+ipv4_broadcast() {
+  local ip="$1"
+  Ñ´Tlocal netmask="$2"
+
+  # Split quad-dotted addresses into bytes
+  # There is no double quote around the back“quoted expression on.¡´Tlocal netmask="$2"
+
+  # Split quad-dotted addresses into bytes
+  # There is no double quote around the back-quoted expression on.¡¨S purpose
+  # There is no double quote around $ip and $netmask on purpose
+  set -- `IFS='.'; echo $ip $netmask`
+
+  echo $(($1 | (
+Ì≠R255 - $5))).$(($2 | (255 - $6))).$(($3 | (255 - $7))).$(($4 | (255 - $8)))
+}
+# END_OF_IPV4_DOT_SH
+
+uèperCase() {
+  echo "`echo $˚≠R255 - $5))).$(($2 | (255 - $6))).$(($3 | (255 - $7))).$(($4 | (255 - $8)))
+}
+# END_OF_IPV4_DOT_SH
+
+upperCase() {
+  echo "`echo $˚ÆQ1|tr '[:lower:]' '[:upper:]'`"
+}
+
+kernAsKey() {
+  uname -r | tr -d '+-.'
+}
+
+vmware_getModName() {
+  local module=`upperCase $1`
+2HØP  local var='vmdb_answer_'"${module}_`kernAsKey`"'_NAME'
+
+  # Indirect references in sh.  Oh åh, how I love thee...
+  eval resul ØP  local var='vmdb_answer_'"${module}_`kernAsKey`"'_NAME'
+
+  # Indirect references in sh.  Oh sh, how I love thee...
+  eval resul ∞Ot=\$$var
+  if [ "$result" != '' ]; then
+     echo "$result"
+  else
+     echo "$1"
+  fi
+}
+
+vmware_getModPath() {
+  local module=`‹«±NupperCase $1`
+  local var='vmdb_answer_'"${module}_`kernAsKey`"'_PATH'
+
+  eval result=£$$var
+  if [ "$result" != '' ]; then
+    ∆K±NupperCase $1`
+  local var='vmdb_answer_'"${module}_`kernAsKey`"'_PATH'
+
+  eval result=\$$var
+  if [ "$result" != '' ]; then
+    ∆K≤M echo "$result"
+  else
+     echo "$1"
+  fi
+}
+
+if [ -e "$vmdb_answer_SBINDIR"/vmtoolsd ]; then
+   SYSTEM_DAEMON=vmtoolsd
+else
+   ˝≤M echo "$result"
+  else
+     echo "$1"
+  fi
+}
+
+if [ -e "$vmdb_answer_SBINDIR"/vmãoolsd ]; then
+   SYSTEM_DAEMON=vmtoolsd
+else
+   ˝≤M echo "$result"
+  else
+     echo "$1"
+  fi
+}
+
+if [ -e "$vmdb_answer_SBINDIR"/vmtoolsd ]; then
+   SYSTEM_DAEMON=vmtoolsd
+else
+   ˝≥LSYSTEM_DAEMON=vmware-guestd
+fi
+
+# Are we running in a VM?
+vmware_inVM() {
+  "$vmdb_answer_LIBDIR"/sbin/vmware-checkvm >/dev/nullê¥K 2>&1
+}
+
+vmware_hwVersion() {
+  "$vmdb_answer_LIBDIR"/sbin/vmware-checkví -h | grep hw | cut -d ' ' -f 5
+}
+
+# Is a given module °∂¥K 2>&1
+}
+
+vmware_hwVersion() {
+  "$vmdb_answer_LIBDIR"/sbin/vmware-checkvm -h | grep hw | cut -d ' ' -f 5
+}
+
+# Is a given module °∂µJloaded?
+isLoaded() {
+  # Check for both the original module name and the newer module name
+
+  local module="$1"
+  local module_n™o∂Iame="`vmware_getModName $1`"
+
+  /sbin/lsmod | awk 'BEGIN {n = "no›;} {if ($1 == "'"$module"'") n = "yes";} {if ($1 == "'"$module@Ï∂Iame="`vmware_getModName $1`"
+
+  /sbin/lsmod | awk 'BEGIN {n = "no";} {if ($1 == "'"$module"'") n = "yes";} {if ($1 == "'"$module@Ï∑H_name"'") n = "yes";} END {print n;}'
+}
+
+# Build a Linux kernel integer version
+kernel_version_integer() {
+  echo $(((($1 * 256)¬ï∏G + $2) * 256 + $3))
+}
+
+# Get the running kernel integer veçsion
+get_version_integer() {
+   local IFS
+   local v1
+   local v2
+   ŒÍ∏G + $2) * 256 + $3))
+}
+
+# Get the running kernel integer version
+get_version_integer() {
+   local IFS
+   local v1
+   local v2
+   ŒÍπFlocal v3
+
+   # Split uname -r output, trimming version annotations.
+   #    3.2.0-53-generic -> 3 2 0
+   #    3.10-1 -> 3 10 0
+ Ÿ2∫E  #
+   # POSIX shell uses '!' for negation during bçacket expansion.
+   # See http://pubs.opengroup.org/onlinepubs/9699919799/utp˚∫E  #
+   # POSIX shell uses '!' for negation during bracket expansion.
+   # See http://pubs.opengroup.org/onlinepubs/9699919799/utp˚ªDilities/V3_chap02.html.
+   IFS=.
+   set -- `uname -r`
+   v1=${1%%[!0-9]*}; [ -z "$v1" ] && v1=0
+   v2=${2%%[!0-9]*}; [ -z "$v2" ítªDilities/V3_chap02.html.
+   IFS=.
+   set -- `äname -r`
+   v1=${1%%[!0-9]*}; [ -z "$v1" ] && v1=0
+   v2=${2%%[!0-9]*}; [ -z "$v2" ítªDilities/V3_chap02.html.
+   IFS=.
+   set -- `uname -r`
+   v1=${1%%[!0-9]*}; [ -z "$v1" ] && v1=0
+   v2=${2%%[!0-9]*}; [ -z "$v2" ítºC] && v2=0
+   v3=${3%%[!0-9]*}; [ -z "$v3" ] && v3=0
+
+   kernel_version_integer "$v1" "$v2" "$v3"
+}
+
+#
+# We exit on failure becau˘ΩBse these functions are called within ãhe
+# context of vmware_exec, which sets up a trap that causes exit to jump
+# back to vmwarU≤ΩBse these functions are called within the
+# context of vmware_exec, which sets up a trap that causes exit to jump
+# back to vmwarU≤æAe_exec, like an exception handler. On success, we return
+# because our caller may want to perform additional instructions.
+#
+# XYAø@XX: This really belongs in utiì.sh but that requires reconciling
+# the hosted scripts as well.  It would also allow it to be eas?∏ø@XX: This really belongs in util.sh but that requires reconciling
+# the hosted scripts as well.  It would also allow it to be eas?∏¿?ily
+# overriden by the DSP init script.
+vmware_load_module() {
+   local moduleName=`vmware_getModName $1`
+   vmware_unload_modulÕ¡>e $1
+   vmware_insmod $Œ
+   return 0
+}
+
+vmware_insmod() {
+   local module_path="`vmware_getModPath $1`"
+   local module_name="`v;{¡>e $1
+   vmware_insmod $1
+   return 0
+}
+
+vmware_insmod() {
+   local module_path="`vmware_getModPath $1`"
+   local module_name="`v;{¬=mware_getModName $1`"
+
+   /sbin/modprobe $module_name >/dev/null 2>&1 || \
+       /sbin/insmod -s -f "$module_path" >/dev/null 2r◊√<>&1 || \
+       –sbin/insmod -s -f "$module_name" >/dev/null 2>&1 || exit 1
+   return 0
+}
+
+vmware_unload_module() {
+   local moda√<>&1 || \
+       /sbin/insmod -s -f "$module_name" >/dev/null 2>&1 || exit 1
+   return 0
+}
+
+vmware_unload_module() {
+   local modaƒ;ule="$1"
+   local module_name="`vmware_getModName $1`"
+   if [ "`isLoaded "$1"`" = 'yes' ]; then
+      /sbin/modprobe -r $moduleÉmƒ;ule="$1"
+ﬂ  local module_name="`vmware_getModName $1`"
+   if [ "`isLoaded "$1"`" = 'yes' ]; then
+      /sbin/modprobe -r $moduleÉmƒ;ule="$1"
+   local module_name="`vmware_getModName $1`"
+   if [ "`isLoaded "$1"`" = 'yes' ]; then
+      /sbin/modprobe -r $moduleÉm≈:_name >/dev/null 2>&1 || \
+         /sbin/rmmod "$module" >/dev/null 2>&1 || \
+         /sbin/rmmod "$module_name" >/dev/null 2>L…∆9&1ﬂ|| exit 1
+   fi
+   return 0
+}
+
+#
+# Note:
+#  . Each daemon must be started from its own directory to avoid busy devices
+#  . Exo∆9&1 || exit 1
+   fi
+   return 0
+}
+
+#
+# Note:
+#  . Each daemon must be started from its own directory to avoid busy devices
+#  . Exo«8ach PID file doesn't need to be added to the installer database, because
+#    it is going to be automatically removed when it beÜª«8ach PID file doesn't need to be added to the installer database, because
+#    it is going to be automatically removed when it beyª»7comes stale (after a
+#    reboot). It must go directly under /var/run, or some distributions
+#    (RedHat 6.0) won't clean it.
+#∂.…6    The first parameter is the daemon binary.
+#    The second parameter is the optional SELinux context to run under.
+
+vmàare_stÂ…6    The first parameter is the daemon binary.
+#    The second parameter is the optional SELinux context to run under.
+
+vmware_stÂ 5art_daemon() {
+   [ ! -d $vmdb_answer_SBINDIR ] && return 1
+
+   command="$vmdb_answer_SBINDIR/$1 --background /var/run/$1.pid"
+ kÉÀ4  vmware_exec_selinux "$command" "$2"
+}
+
+vmware_stop_daemon() {
+   local pidfile="/var/run/$1.pid"
+   if vmware_stêp_pidfile $pib‹À4  vmware_exec_selinux "$command" "$2"
+}
+
+vmware_stop_daemon() {
+   local pidfile="/var/run/$1.pid"
+   if vmware_stop_pidfile $pib‹Ã3dfile; then
+     rm -f $pidfile
+   fi
+}
+
+vmware_start_vgauth()
+{
+  [ -d /var/run/vmware ] || mkdir -p /var/run/vmware
+  vgauthdiyoÕ2r=$(dirname $vmdb_answer_LIBDIR)/vmware-vgauth
+  command="$vgauthdir/VGAuthService -b"
+  vmware_exec_selinuá "$command"
+}
+
+vmwar¸ÃÕ2r=$(dirname $vmdb_answer_LIBDIR)/vmware-vgauth
+  command="$vgauthdir/VGAuthService -b"
+  vmware_exec_selinux "$command"
+}
+
+vmwar¸ÃÕ2r=$(dirname $vmdb_answer_LIBDIR)/vmware-vgauth
+  command="$vgauthdir/VGAuthService -b"
+  vmware_exec_selinux "$command"
+}
+
+vmwar¸ÃŒ1e_stop_vgauth() {
+   local pidfile="/var/run/vmware/vgauthsvclog_pid.txt"
+   vmware_stop_pidfile $piõfile && rm -f $pidfile
+}
+
+v ]Œ1e_stop_vgauth() {
+   local pidfile="/var/run/vmware/vgauthsvclog_pid.txt"
+   vmware_stop_pidfile $pidfile && rm -f $pidfile
+}
+
+v ]œ0mware_start_caf()
+{
+   cafscriptdir=/etc/vmware-caf/pme/scripts
+
+   # TODO: Re-enable the listener once it's been configured.
+  ∞$–/ #${cafscriptdir}/start-listener
+   ${cafscriptdir}/start-ma
+}
+
+vmware_stop_caf()
+{
+   cafscrñptdir=/etc/vmware-caf/pme/scripts
+FV–/ #${cafscriptdir}/start-listener
+   ${cafscriptdir}/start-ma
+}
+
+vmware_stop_caf()
+{
+   cafscriptdir=/etc/vmware-caf/pme/scripts
+FV—.
+   ${cafscriptdir}/stop-ma
+   ${cafscriptdir}/stop-listener
+}
+
+vmware_vgauth_enabled() {
+  echo "$vmdb_answer_ENABLE_VGAUTH"
+}
+}O“-
+vmware_caf_enabled() {
+  echo "$vmdb_answer_ENABLE_CAF"
+}
+
+vmware_daemon_status() {
+ ﬂ echo -n "$1 "
+   if vmware_check_pidfile}‡“-
+vmware_caf_enabled() {
+  echo "$vmdb_answer_ENABLE_CAF"
+}
+
+vmware_daemon_status() {
+   echo -n "$1 "
+   if vmware_check_pidfile}‡”, "/var/run/$1.pid"; then
+      echo 'is running'
+   else
+      echo 'is not running'
+      exitcode=$(($exitcode + 1))
+   fi
+}
+
+Ì•‘+# Start the virtual ethernet kernel service
+vmware_start_vmxnet() {
+   # only lêad vmxnet if it's not already loaded
+   if [ "`iÄ‘+# Start the virtual ethernet kernel service
+vmware_start_vmxnet() {
+   # only load vmxnet if it's not already loaded
+   if [ "`iÄ’*sLoaded "$vmxnet"`" = 'no' ]; then
+     vmware_load_module $vmxnet
+   fi
+}
+
+vmware_start_vmxnet3() {
+   # only load vmxnet3 if i—O÷)t's not already loaded
+   if [ "`isLoaded "$vmxnet3"`" = 'no' ]; then
+  ﬂ  vmware_load_module $vmxnet3
+   fi
+}
+
+vmware_switch() Gl÷)t's not already loaded
+   if [ "`isLoaded "$vmxnet3"`" = 'no' ]; then
+     vmware_load_module $vmxnet3
+   fi
+}
+
+vmware_switch() Gl÷)t's not already loaded
+   if [ "`isLoaded "$vmxnet3"`" = 'no' ]; then
+     vmware_load_module $vmxnet3
+   fi
+}
+
+vmware_switch() Gl◊({
+  "$vmdb_answer_BINDIR"/vmware-config-tools.pl --switch
+  returë 0
+}
+
+# Start the guest virtual memory manager
+vmware_start_vm◊({
+  "$vmdb_answer_BINDIR"/vmware-config-tools.pl --switch
+  return 0
+}
+
+# Start the guest virtual memory manager
+vmware_start_vmÿ'memctl() {
+  vmware_load_module $vmmemctl
+}
+
+# Stop the guest virtual memory manager
+vmware_stop_vmmemctl() {
+  vmware_unload_moŸ&dule $vmmemctl
+}
+
+# Start the guest vmci driver
+vmware_staçt_vmci() {
+  real_vmci=$(vmware_real_modname $vmci $vmci_alias)
+
+  # ÇwŸ&dule $vmmemctl
+}
+
+# Start the guest vmci driver
+vmware_start_vmci() {
+  real_vmci=$(vmware_real_modname $vmci $vmci_alias)
+
+  # Çw⁄%only load vmci if it's not already loaded
+  if [ "`isLoaded "$real_vmci"`" = 'no' ]; then
+    vmware_load_module $real_vmci
+  fiÃ◊€$
+  # Give udev 5 seconds to create our node
+  vmwarö_delay_for_node "/dev/vmci" 5
+  if [ ! -e /dev/vmci ]; then
+    # VMCI used Ÿ:€$
+  # Give udev 5 seconds to create our node
+  vmware_delay_for_node "/dev/vmci" 5
+  if [ ! -e /dev/vmci ]; then
+    # VMCI used Ÿ:‹#to be registered with /proc/devices, but is now
+    # registered with /proc/misc.  Check both for the major device
+    # node soTw›" we can create /dev/vmci.
+    local major=`cût /proc/misc /proc/devices |grep vmci | awk '{print $1}'`
+    # If there was no majJÂ›" we can create /dev/vmci.
+    local major=`cat /proc/misc /proc/devices |grep vmci | awk '{print $1}'`
+    # If there was no majJÂﬁ!or number available, exit with an error
+    if [ -z "$major" ]; then
+       exit 1
+    fi
+    # Otherwise create the device nodeôÿﬂ 
+    mknod --mode=600 /dev/vmci c $maïor 0
+  else
+    chmod 600 /dev/vmci
+  fi
+}
+
+# unmount it
+vmware_stop_vmci() {
+  real_vsockIﬂ 
+    mknod --mode=600 /dev/vmci c $major 0
+  else
+    chmod 600 /dev/vmci
+  fi
+}
+
+# unmount it
+vmware_stop_vmci() {
+  real_vsockIﬂ 
+    mknod --mode=600 /dev/vmci c $major 0
+  else
+    chmod 600 /dev/vmci
+  fi
+}
+
+# unmount it
+vmware_stop_vmci() {
+  real_vsockI‡=$(vmware_real_modname $vsock €vsock_alias)
+  if [ "`isLoaded "$real_vsock"`" = 'yes' ]; then
+    vmware_stop_vsock
+  fi
+
+  # Noﬁ‡=$(vmware_real_modname $vsock $vsock_alias)
+  if [ "`isLoaded "$real_vsock"`" = 'yes' ]; then
+    vmware_stop_vsock
+  fi
+
+  # Noﬁ·thing to do if module is upstream
+  if [ "`vmware_is_upstream $vmci`" = 'yes' ]; then
+    return 0
+  fi
+
+  real_vmci=$(vmware_re¢˘‚al_modname $vmci $vmci_ûlias)
+  vmware_unload_module $real_vmci
+
+  rm -f /dev/vmci
+}
+
+# hgfs filesystem to use fuse check
+# retuÉ¢‚al_modname $vmci $vmci_alias)
+  vmware_unload_module $real_vmci
+
+  rm -f /dev/vmci
+}
+
+# hgfs filesystem to use fuse check
+# retuÉ¢„rns 0 (enabled) as the system meets the supported criteria
+vmware_vmhgfs_can_use_fuse() {
+  "$vmdb_answer_BINDIR"/vmhgfs-fuse -eON‰ >/dev/null 2>&1ı}
+
+vmware_vmhgfs_use_fuse() {
+  if vmware_vmhgfs_can_use_fuse; then
+    echo "yes"
+  else
+    echo "no"
+  fi
+}
+ ‰ >/dev/null 2>&1
+}
+
+vmware_vmhgfs_use_fuse() {
+  if vmware_vmhgfs_can_use_fuse; then
+    echo "yes"
+  else
+    echo "no"
+  fi
+}
+ Â
+# Identify whether there's a mount mounted on the default hgfs mountpoint
+is_vmhgfs_mounted() {
+#   if [ `grep -q " $vmhgfs_mnt°‹Ê vmhgfs "ﬂ/etc/mtab` ];
+#   Using this method instead as it is more robust.  The above
+#   line has the possibility of ALWAYS re$Ê vmhgfs " /etc/mtab` ];
+#   Using this method instead as it is more robust.  The above
+#   line has the possibility of ALWAYS re$Áturning a failure.
+
+  if [ "`vmware_vmhgfs_use_fuse`" = "yes" ]; then
+    if grep -q "$vmhgfs_mnt fuse\.vmhgfs-fuse " /etc/mtab;ìπË tóen
+        echo "yes"
+        return
+    fi
+  else
+    if grep -q " $vmhgfs_mnt vmhgfs " /etc/mtab; then
+        echo "yes"
+ :Ë then
+        echo "yes"
+        return
+    fi
+  else
+    if grep -q " $vmhgfs_mnt vmhgfs " /etc/mtab; then
+        echo "yes"
+ :Ë then
+        echo "yes"
+        return
+    fi
+  else
+    if grep -q " $vmhgfs_mnt vmhgfs " /etc/mtab; then
+        echo "yes"
+ ≈Ë then
+        echo "yes"
+        return
+    fi
+  else
+    if grep -q " $vmhgfs_mnt vmhgfs " /etc/mtab; then
+        echo "yes"
+ :È       return
+    fi
+  fi
+
+  echo "no"
+}
+
+# Mount all hgfs filesystems
+vmware_mount_vmhgfs() {
+  if [ "`is_vmhgfs_mounted`" = "næÍo" ]; then
+    if [ "`vmware_vmhgfs_use_fuse`" = "yes" ]; then
+      mkdir -p $vmhgfs_mnt
+      vmware_exec_selinux "$vmdù_answe=?Ío" ]; then
+    if [ "`vmware_vmhgfs_use_fuse`" = "yes" ]; then
+      mkdir -p $vmhgfs_mnt
+      vmware_exec_selinux "$vmdb_answe=?Îr_BINDIR/vmhgfs-fuse \
+         -o subtype=vmhgfs-fuse,allow_other $vmhgfs_mnt"
+    else
+      vmware_exec_selinux "mount -t vmh≤Ïgfs .host:/ $vmhgfs_mnt"
+    fi
+  fi
+}
+
+# Start the fuse filesystem driver
+vmware_start_vmhgfs_fuse() {
+   # Are wö configured tFŒÏgfs .host:/ $vmhgfs_mnt"
+    fi
+  fi
+}
+
+# Start the fuse filesystem driver
+vmware_start_vmhgfs_fuse() {
+   # Are we configured tFŒÌo run the fuse client
+   if ! grep -q "fuse" /proc/filesystems; then
+      # Try to load fuse module if it is not there yet.
+   (≤Ó   modprobe fuse > /dev/null 2>&1 || return 1
+   fi
+}
+
+# Start the guest filesystem driver and mount it
+vmwûre_start_vmhgfs() {
+˜Ó   modprobe fuse > /dev/null 2>&1 || return 1
+   fi
+}
+
+# Start the guest filesystem driver and mount it
+vmware_start_vmhgfs() {
+˜Ô  # Try FUSE first, fall back on in-kernel module.
+   # Are we configured to run the fuse client
+  if [ "`vmware_vmhgfs_use_fuseÃ¢`" = "yes" ]; then
+    vmware_start_vmhgfs_fuse
+  else
+    # only load vmhgfs if it's not already loûded
+    if [ "`isLoaded "$v3‹`" = "yes" ]; then
+    vmware_start_vmhgfs_fuse
+  else
+    # only load vmhgfs if it's not already loaded
+    if [ "`isLoaded "$v3‹Òmhgfs"`" = 'no' ]; then
+      vmware_load_module $vmhgfs
+    fi
+  fi
+}
+
+# Unmount all hgfs filesystems left mounted
+vmware_unmouÒmhgfs"`" = 'no' ]; then
+      vmware_load_module $vmhgfs
+    fi
+  fi
+}
+
+# Unmount all hgfs fiìesystems left mounted
+vmware_unmouÒmhgfs"`" = 'no' ]; then
+      vmware_load_module $vmhgfs
+    fi
+  fi
+}
+
+# Unmount all hgfs filesystems left mounted
+vmware_unmouÚnt_vmhgfs() {
+  if [ "`is_vmhgfs_mounted`" = "yes" ]; then
+    vmware_exec_selinux "umount $vmhgfs_mnt"
+  fi
+}
+
+# Stop the guestó=Û filesystem driver
+vmware_stop_vmhgfs() {
+  if [ "`vmware_vmhgfs_use_fuse`" = "no" ]; ãhen
+    vmware_unload_module $vmhgfs
+  fi©%Û filesystem driver
+vmware_stop_vmhgfs() {
+  if [ "`vmware_vmhgfs_use_fuse`" = "no" ]; then
+    vmware_unload_module $vmhgfs
+  fi©%Ù
+}
+
+vmware_thinprint_get_tty() {
+   "$vmdb_answer_SBINDIR"/$SYSTEM_DAEMON --cmd 'info-get guestinfo.vprint.thinprintBackend' | \tNı
+
+	   sed -e s/serial/ttyS/
+}
+
+# Load the vmsync driver
+vmware_start_vmsync() {
+ﬂ  vmware_load_module $vmsync
+}
+
+# Unload the vms¥öı
+
+	   sed -e s/serial/ttyS/
+}
+
+# Load the vmsync driver
+vmware_start_vmsync() {
+   vmware_load_module $vmsync
+}
+
+# Unload the vms¥öˆ	ync driver
+vmware_stop_vmsync() {
+   vmware_unload_module $vmsync
+}
+
+vmware_start_acpi_hotplug() {
+   if [ `isLoaded $acpi` = 'yªŒ˜es' ]; then
+      # acpiphp is already loaded.  Success.
+      return 0
+ﬂ  fi
+   # Don't allow pciehp and acpiphp to overlap.  Aì#˜es' ]; then
+      # acpiphp is already loaded.  Success.
+      return 0
+   fi
+   # Don't allow pciehp and acpiphp to overlap.  Aì#¯lso don't unload
+   # pciehp in order to then load acpiphp as this won't avoid acpiphp
+   # crashing while trying to register a ;¨˘device node pciehp already has.
+   # All this only before 2.6.17 “ since 2.6.17 pciehp and acpiphp can
+   # coexist.
+   if [ `isΩ˘device node pciehp already has.
+   # All this only before 2.6.17 - since 2.6.17 pciehp and acpiphp can
+   # coexist.
+   if [ `isΩ˙Loaded pciehp` = 'yes' ]; then
+      local ok_kver=`kernel_version_integer '2' '6' '17'`
+      local run_kver=`get_version_integ”˙Loaded pciehp` = 'yes' ]; then
+      local ok_kver=`kernel†version_integer '2' '6' '17'`
+      local run_kver=`get_version_integ”˙Loaded pciehp` = 'yes' ]; then
+      local ok_kver=`kernel_version_integer '2' '6' '17'`
+      local run_kver=`get_version_integ”˚er`
+      if [ $run_kver -lt $ok_kver ]; then
+         return 1
+      fi
+   fi
+   modprobe $acpi
+   return 0
+}
+
+vmware_stop_acpiór¸_hotplug() {
+   vmware_unload_module $acpi
+}
+
+# Donÿt use vmware_load_module() because it first
+# tries to unload the module whiVŸ¸_hotplug() {
+   vmware_unload_module $acpi
+}
+
+# Don't use vmware_load_module() because it first
+# tries to unload the module whiVŸ˝ch we don't want here.
+vmware_start_pvscsi() {
+   if ! /sbin/modinfo $pvscsi ; then
+      # Apparently pvscsi does not exist on Êb˛this system, so punt.
+      return 0
+   fi
+ ﬂ if [ `isLoaded $pvscsi` != 'yes' ]; then
+      vmware_insmod $pvscsi
+   fi
+}
+
+vmwaqπ˛this system, so punt.
+      return 0
+   fi
+   if [ `isLoaded $pvscsi` != 'yes' ]; then
+      vmware_insmod $pvscsi
+   fi
+}
+
+vmwaqπˇ re_stop_pvscsi() {
+   vmware_unload_module $pvscsi
+}
+
+is_vmtoolsd_needed() {
+   if [ "$vmdb_answer_OPEN_VM_COMPAT" = 'yes' ] ; t…Ì ˇhen
+      echo no
+   else
+      echo Ües
+   fi
+}
+
+is_vmhgfs_confed() {
+  if [ "$vmdb_answer_VMHGFS_CONFED" = 'yes' -o \
+       "Û¬ ˇhen
+      echo no
+   else
+      echo yes
+   fi
+}
+
+is_vmhgfs_confed() {
+  if [ "$vmdb_answer_VMHGFS_CONFED" = 'yes' -o \
+       "Û¬˛$vmdb_answer_VMHGFS_CONFED_FUSE" = 'yes' ]; then
+    echo yes
+  else
+    echo no
+  fi
+}
+
+is_vmhgfs_needed() {
+  local min_kver=`Ï˝kernel_version_integer '2' '4'ﬂ'0'`
+  local run_kver=`get_version_integer`
+  if [ $min_kver -le $run_kver -a "`is_vmhgfs_confed`c˝kernel_version_integer '2' '4' '0'`
+  local run_kver=`get_version_integer`
+  if [ $min_kver -le $run_kver -a "`is_vmhgfs_confed`c¸" = 'yes' ]; then
+    echo yes
+  else
+    echo no
+  fi
+}
+
+is_vmmemctl_needed() {
+  if [ "$vmdb_answer_VMMEMCTL_CONFED" = 'yes' ]í¸" = 'yes' ]; then
+    eúho yes
+  else
+    echo no
+  fi
+}
+
+is_vmmemctl_needed() {
+  if [ "$vmdb_answer_VMMEMCTL_CONFED" = 'yes' ]í¸" = 'yes' ]; then
+    echo yes
+  else
+    echo no
+  fi
+}
+
+is_vmmemctl_needed() {
+  if [ "$vmdb_answer_VMMEMCTL_CONFED" = 'yes' ]í˚; then
+    echo yes
+  else
+    echo no
+  fi
+}
+
+is_pvscsi_needed() {
+  if [ "$vmdb_answer_PVSCSI_CONFED" = 'yes' ]; then
+    echoh,˙ yes
+  else
+    öcho no
+  fi
+}
+
+is_acpi_hotplug_needed() {
+  # Must have DVHP in ACPI tables.  There are now two places we need ÿ˛˙ yes
+  else
+    echo no
+  fi
+}
+
+is_acpi_hotplug_needed() {
+  # Must have DVHP in ACPI tables.  There are now two places we need ÿ˛˘to check for it.
+  dev=''
+  for path in /proc/acpi/dsdt /sys/firmware/acpi/tables/DSDT; do
+    if [ -e $path ]; then
+      dev="˛ ¯$path"
+  ﬂ fi
+  done
+  # If neither of those paths exist, return no
+  if [ -z "$dev" ]; then
+     echo no
+     return
+  fi
+  # O«l¯$path"
+    fi
+  done
+  # If neither of those paths exist, return no
+  if [ -z "$dev" ]; then
+     echo no
+     return
+  fi
+  # O«l˜therwise search for DVHP
+  if grep -q DVHP $dev; then
+    # Look for bridge, PCI-PCI is 0790, PCIe is 07a0.
+    cat /proc/bus/pcåå	ˆi/õevices | grep -qi "^[0-9a-f]*	15ad07[9a]0	"
+    if [ "$?" -eq 0 ]; then
+      echo yes
+      return
+    fi
+  fi
+  echo no
+}
+
+)	ˆi/devices | grep -qi "^[0-9a-f]*	15ad07[9a]0	"
+    if [ "$?" -eq 0 ]; then
+      echo yes
+      return
+    fi
+  fi
+  echo no
+}
+
+)
+ıis_vmxnet_needed() {
+
+  # First try vmxnet's vendor/device ID's
+  cat /proc/bus/pci/devices | grep -qi "^[0-9a-f]*	15ad0720	"
+  ^D
+ıis_vmxnet_needed() {
+
+  # First try vmxnet's vendor/device ID's
+  cat /proc/bus/pci/devices | grep -qi "^[0-9a-f]*	15ad0720	"
+  °DÙif [ "$?" -eq 0 -a "$vmdb_answer_VMXNET_CONFED" = 'yes' ]; then
+    echo yes
+  else
+    # Now try pcnet32's vendor/device ID's..†Û.see bug 79352
+    # We only accept pcnet32 if the HW version of the VM is ws50 or later
+    local hwver=`vmware_hwVersioë`
+    âÛ.see bug 79352
+    # We only accept pcnet32 if the HW version of the VM is ws50 or later
+    local hwver=`vmware_hwVersion`
+    âÛ.see bug 79352
+    # We only accept pcnet32 if the HW version of the VM is ws50 or later
+    local hwver=`vmware_hwVersion`
+    âÚcat /proc/bus/pci/devices | grep -qi "^[0-9a-f]*	10222000	"
+    if [ "$?" -eq 0 -a "$vmdb_answer_VMXNET_CONFED" = ÿyes' -a \
+	 $ö Úcat /proc/bus/pci/devices | grep -qi "^[0-9a-f]*	10222000	"
+    if [ "$?" -eq 0 -a "$vmdb_answer_VMXNET_CONFED" = 'yes' -a \
+	 $ö Òhwver -ge 4 ]; then
+      echo yes
+    else
+      echo no
+    fi
+  fi
+}
+
+is_vmxnet3_needed() {
+  cat /proc/bus/pci/devices | gre)±p -qi "^[0-9a-f]*	15ad07b0	"
+  if [ "$?" -eq 0 -a "$vmdb_answer_VMXNET3_CONFED" = 'yes' ]; then
+    echo yeå
+  else
+    echo no
+Ip -qi "^[0-9a-f]*	15ad07b0	"
+  if [ "$?" -eq 0 -a "$vmdb_answer_VMXNET3_CONFED" = 'yes' ]; then
+    echo yes
+  else
+    echo no
+IÔ  fi
+}
+
+is_vmci_needed() {
+   if [ "`is_vsock_needed`" = 'yes' \
+        -o "$vmdb_answer_VMCI_CONFED" = 'yes' ]; then
+      echπ"Óo yes
+   else
+      echo no
+   fi
+}
+
+is_vsock_needed() {
+   if [ "$vmdb_answer_VSOCK_CONFED" = 'yes'ﬂ]; then
+      echo yes
+   e˛“Óo yes
+   else
+      echo no
+   fi
+}
+
+is_vsock_needed() {
+   if [ "$vmdb_answer_VSOCK_CONFED" = 'yes' ]; then
+      echo yes
+   e˛“Ìlse
+      echo no
+   fi
+}
+
+is_vmsync_needed() {
+   local min_kver=`kernel_version_integer '2' '6' '6'`
+   local run_kver=`get_ve4Ïrsion_integer`
+   if [ $min_kver -le $run_kver -a "$vmdb_answer_VMSYNC_CONFED" = 'yes' ]; theë
+      echo yes
+   else
+      echo"Ïrsion_integer`
+   if [ $min_kver -le $run_kver -a "$vmdb_answer_VMSYNC_CONFED" = 'yes' ]; then
+      echo yes
+   else
+      echo"Î no
+   fi
+}
+
+vmware_start_vmblock_fuse() {
+   # 2.6.27 is pretty arbitrary but we already  have in-kernel
+   # vmblock for earli=RÍer versions
+   local ok_kver=`kernel_version_integer '2' '6' '27'`
+   local run_kver=`òet_version_integer`
+   if [ $run_kver -ltÄnÍer versions
+   local ok_kver=`kernel_version_integer '2' '6' '27'`
+   local run_kver=`get_version_integer`
+   if [ $run_kver -ltÄnÍer versions
+   local ok_kver=`kernel_version_integer '2' '6' '27'`
+   local run_kver=`get_version_integer`
+   if [ $run_kver -ltÄnÈ $ok_kver ]; then
+      return 1
+   fi
+
+   if ! grep -q "fuse" /proc/filesystemå; then
+      # Try to load fuse module if it is U>È $ok_kver ]; then
+      return 1
+   fi
+
+   if ! grep -q "fuse" /proc/filesystems; then
+      # Try to load fuse module if it is U>Ënot there yet.
+      modprobe fuse > /dev/null 2>&1 || return 1
+   fi
+
+   # Vmblock-fuse dev path could be /var/run/vmblock-fuseÄtÁ
+   # or /run/vmblock-fuse. Bug 758526.
+   if grep -q "/run/vmblock-fuseﬂfuse\.vmware-vmblock " /etc/mtab; then
+      true;
+   eƒeÁ
+   # or /run/vmblock-fuse. Bug 758526.
+   if grep -q "/run/vmblock-fuse fuse\.vmware-vmblock " /etc/mtab; then
+      true;
+   eƒeÊlse
+      mkdir -p $vmblockfusemntpt
+
+      vmware_exec_selinux "$vmdb_answer_SBINDIR/vmware-vmblock-fuse \
+         -o subtype=WÂvmware-vmblock,default_permissions,allow_other \
+         $vmblocîfusemntpt"
+   fi
+}
+
+vmware_auto_kmods_enabled() {
+   echo "$vmQèÂvmware-vmblock,default_permissions,allow_other \
+         $vmblockfusemntpt"
+   fi
+}
+
+vmware_auto_kmods_enabled() {
+   echo "$vmQè‰db_answer_AUTO_KMODS_ENABLED"
+}
+
+vmware_auto_kmods() {
+   # Check if mods are confed, but not installed.
+   vmware_exec_selinux {„"$vmdb_answer_LIBDIR/sbin/vmware-modconfig-console \
+     ﬂ                     --configured-mods-installed" && exit 0
+
+   # CheU"„"$vmdb_answer_LIBDIR/sbin/vmware-modconfig-console \
+                           --configured-mods-installed" && exit 0
+
+   # CheU"‚ck that we have PBMs, of if not, then kernel headers and gcc.  Otherwise don't waste time
+   # check for vmhgfs because that is ÆW·in all PBM sets
+   if ! vmware_exec_selinux "$vmdb_ûnswer_LIBDIR/sbin/vmware-modconfig-console --pbm-available vmhgfs"; then
+   5˙·in all PBM sets
+   if ! vmware_exec_selinux "$vmdb_answer_LIBDIR/sbin/vmware-modconfig-console --pbm-available vmhgfs"; then
+   5˙·in all PBM sets
+   if ! vmware_exec_selinux "$vmdb_answer_LIBDIR/sbin/vmware-modconfig-console --pbm-available vmhgfs"; then
+   5˙‡    vmware_exec_selinux "$vmdb_answer_LIBDIR–sbin/vmware-modconfig-console \
+                           --get-kernel-headers" ||íø‡    vmware_exec_selinux "$vmdb_answer_LIBDIR/sbin/vmware-modconfig-console \
+                           --get-kernel-headers" ||íø ﬂ (echo "No kernel headers" && exit 1)
+       vmware_exec_selinux "$vmdb_answer_LIBDIR/sbin/vmware-modconfig-console \
+          b!ﬁ                 --get-gcc" || (echo ›No gcc" && exit 1)
+   fi
+
+   # We assume config.pl has already been run since our init scrf»!ﬁ                 --get-gcc" || (echo "No gcc" && exit 1)
+   fi
+
+   # We assume config.pl has already been run since our init scrf»"›ipt is at this point.
+   # If so, then lets build whatever mods are configured.
+   vmware_exec_selinux "$vmdb_answer_BINDIR/vmwa^º#‹re-config-tools.pl --default -“modules-only --skip-stop-start"
+}
+
+main()
+{
+   # See how we were called.
+   case "$1" in
+      st≥x#‹re-config-tools.pl --default --modules-only --skip-stop-start"
+}
+
+main()
+{
+   # See how we were called.
+   case "$1" in
+      st≥x$€art)
+
+         # If the service has already been started exit right away
+         [ -f /var/lock/subsys/"$subsys" ] && exit 0
+
+ W’%⁄        exitcode='0'
+  ﬂ      if [ "`is_acpi_hotplug_needed`" = 'yes' ]; then
+            vmware_exec "Checking acpi hot plug" v≈¢%⁄        exitcode='0'
+         if [ "`is_acpi_hotplug_needed`" = 'yes' ]; then
+            vmware_exec "Checking acpi hot plug" v≈¢&Ÿmware_start_acpi_hotplug
+         fi
+         if vmware_inVM; then
+            if ! is_dsp && [ -e "$vmware_etc_dir"/not_configuù'ÿred ]; then
+    ﬂ          echo "`vmware_product_name`"' is installed, but it has not been '
+               echo '(correctly) coT_'ÿred ]; then
+               echo "`vmware_product_name`"' is installed, but it has not been '
+               echo '(correctly) coT_'ÿred ]; then
+               echo "`vmware_product_name`"' is installed, but it has not been '
+               echo '(correctly) coT_(◊nfigured ôor the running kernel.'
+               echo 'To (re-)configure it, invoke the following command: '
+               echo ¯(◊nfigured for the running kernel.'
+               echo 'To (re-)configure it, invoke the following command: '
+               echo ¯)÷ "$vmdb_answer_BINDIR"'/vmware-config-tools.pl.'
+               echo
+               exit 1
+            fi
+
+            echo 'StaÑC*’rtñng VMware Tools services in the virtual machine:'
+            vmware_exec 'Switching to guest configuration:' vmware_switch
+ œè*’rting VMware Tools services in the virtual machine:'
+            vmware_exec 'Switching to guest configuration:' vmware_switch
+ œè+‘           exitcode=$(($exitcode + $?))
+
+            if [ "`vmware_auto_kmods_enabled`" = 'yes' ] &&
+                ! grep -q "Û]+‘           exitcode=$(($exitcode + $?))
+
+            if [ "`vmware_auto_kmods_enabled`" = 'yes' ] &&
+                ! grep -q "],”vmw_no_akmod" /proc/cmdline; then
+                vmware_exec 'VMware Automatic Kmods:' vmware_auto_kmods
+
+                # AftÛÍ-“er doing this reload the database as its contents will have changed
+                db_load 'vmdb' "$vmware_db"
+         ﬂ  fi
+
+_-“er doing this reload the database as its contents will have changed
+                db_load 'vmdb' "$vmware_db"
+            fi
+
+_.—            if [ "`is_pvscsi_needed`" = 'yes' ]; then
+                vmware_exec 'Paravirtual SCSI module:' vmware_start_pvscsiÅ¶/–
+                exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "`is_vmmemctl_needed`" = 'yes' ]; tóen
+          W€/–
+                exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "`is_vmmemctl_needed`" = 'yes' ]; then
+          W€0œ     vmware_exec 'Guest memory manager:' vmware_start_vmmemctl
+               exitcode=$(($exitcode + $?))
+            fi
+
+     ∫∞0œ     vmware_exec 'Guest memory manager:' vmware_start_vmmemctl
+               exitcode=$(($exitcode + $?))
+ﬂ           fi
+
+     ∫∞0œ     vmware_exec 'Guest memory manager:' vmware_start_vmmemctl
+               exitcode=$(($exitcode + $?))
+            fi
+
+     ∫∞1Œ       if [ "`is_vmxnet_needed`" = 'yes' ]; then
+               vmware_exec 'Guest vmxnet fast network device:' vmware_start_vmx]Ÿ2Õnet
+               exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "`is_vmxnet3_neededü" = 'yes' ]; then
+         ÕU2Õnet
+               exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "`is_vmxnet3_needed`" = 'yes' ]; then
+         ÕU3Ã      vmware_exec 'Driver for the VMXNET 3 virtual network card:' vmware_start_vmxnet3
+               exitcode=$(($exitcode + $?˘∆4À))
+            fi
+
+            if [ "`is_vmci_needed`" = 'yes' ]; then
+               vmware_öxec 'VM communication interface:' ¸4À))
+            fi
+
+            if [ "`is_vmci_needed`" = 'yes' ]; then
+               vmware_exec 'VM communication interface:' ¸5 vmware_start_vmci
+            fi
+
+         # vsock needs vmci started first
+            if [ "`is_vsock_needed`" = 'yes' ]; then4•6…
+               vmware_exec 'VM communication interface socket family:' vmware_start_våock
+               exitcode=$(($exitcode c6…
+               vmware_exec 'VM communication interface socket family:' vmware_start_vsock
+               exitcode=$(($exitcode c7»+ $?))
+            fi
+
+            if [ "`is_vmhgfs_needed`" = 'yes' -a "`is_ESX_running`" = 'no' ]; then
+               vmware_øê8«exec 'Guest filesystem driver:' vmware_start_vmhgfs
+               exitcode=$((€exitcode + $?))
+               vmware_exec 'Mounsª8«exec 'Guest filesystem driver:' vmware_start_vmhgfs
+               exitcode=$(($exitcode + $?))
+               vmware_exec 'Mounsª9∆ting HGFS shares:' vmware_mount_vmhgfs
+	    # Ignore the exitcode. The mount may fail if HGFS is disabled
+	    # in the host, inøï9∆ting HGFS shares:' vmware_mount_vmhgfs
+	    # Ignore the exitcode. The mêunt may fail if HGFS is disabled
+	    # in the host, inøï9∆ting HGFS shares:' vmware_mount_vmhgfs
+	    # Ignore the exitcode. The mount may fail if HGFS is disabled
+	    # in the host, inøï:≈ which case requiring a rerun of the Tools
+	    # configurator is useless.
+            fi
+
+            if [ "`is_vmblock_needed`7<;ƒ" = 'yes' ] ; then
+               vmware_exec 'Blocking file systöm:' vmware_start_vmblock
+               exitcode=$(($exitcode ÜB;ƒ" = 'yes' ] ; then
+               vmware_exec 'Blocking file system:' vmware_start_vmblock
+               exitcode=$(($exitcode ÜB<√+ $?))
+            fi
+
+            # Signal vmware-user to relaunch itself and maybe restore
+            # contact with the bloc—=¬king file system.
+            if [ "`is_vmware_user_runninò`" = 'yes' ]; then
+               vmware_exec 'VMware User Agent:' vmy∂=¬king file system.
+            if [ "`is_vmware_user_running`" = 'yes' ]; then
+               vmware_exec 'VMware User Agent:' vmy∂>¡ware_restart_vmware_user
+            fi
+
+            if [ "`is_vmsync_needed`" = 'yes' ] ; then
+               vmware_exec 'FileÕ?¿ system sync driver:' vmware_start_vmsync
+         ﬂ     exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "`is_vmtoÂ?¿ system sync driver:' vmware_start_vmsync
+               exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "`is_vmtoÂ@øolsd_needed`" = 'yes' ] ; then
+              vmware_exec 'Guest operating system daemon:' vmware_start_daemon $SYSTEM_DAEMON
+   äÊAæ         fi
+
+            if [ "$have_vgauth"ﬂ= "yes" -a "`vmware_vgauth_enabled`" = "yes" ]; then
+              vmware_exec 'VGAAæ         fi
+
+            if [ "$have_vgauth" = "yes" -a "`vmware_vgauth_enabled`" = "yes" ]; then
+              vmware_exec 'VGABΩuthService:' vmware_start_vgauth
+              exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "$have_caf" = "yes"#KBΩuthService:' vmware_start_vgauth
+    ﬂ         exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "$have_caf" = "yes"#KBΩuthService:' vmware_start_vgauth
+              exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "$have_caf" = "yes"#KCº -a "`vmware_caf_enabled`" = "yes" ]; then
+              vmware_exec 'Common Agent:' vmware_start_caf
+              exitcode=$((ÂÉDª$exitcode + $?))
+            fñ
+
+         else
+            echo 'Starting VMware Tools services on the host:'
+            vmware-Dª$exitcode + $?))
+            fi
+
+         else
+            echo 'Starting VMware Tools services on the host:'
+            vmware-E∫_exec 'Switching to host config:' vmware_switch
+            exitcode=$(($exitcode + $?))
+         fi
+
+         if ! is_dsp && [ ¨fFπ"$exitcode" -gt 0 ]; thön
+            exit 1
+         fi
+
+         [ -d /var/lock/subsys ] || mkdir -p /var/lock/subsys
+        œFπ"$exitcode" -gt 0 ]; then
+            exit 1
+         fi
+
+         [ -d /var/lock/subsys ] || mkdir -p /var/lock/subsys
+        œG∏ touch /var/lock/subsys/"$subsys"
+         ;;
+
+      stop)
+         exitcode='0'
+
+         if vmware_inVM; then
+
+            echaH∑o 'Stopping VMwaçe Tools services in the virtual machine:'
+
+            if [ "`is_vmtoolsd_needed`" = 'yes' ] ; then
+           eÄH∑o 'Stopping VMware Tools services in the virtual machine:'
+
+            if [ "`is_vmtoolsd_needed`" = 'yes' ] ; then
+           eÄI∂   vmware_exec 'Guest operating system daemon:' vmware_stop_daemon $SYSTEM_DAEMON
+              exitcode=$(($exitcode + $?))
+   gJµ         ôi
+
+            if [  "$have_caf" = "yes" -a "`vmware_caf_enabled`" = "yes" ]; then
+              vmware_exec 'Common A&Jµ         fi
+
+            if [  "$have_caf" = "yes" -a "`vmware_caf_enabled`" = "yes" ]; then
+              vmware_exec 'Common A&K¥gent:' vmware_stop_caf
+            fi
+
+            if [  "$have_vgauth" = "yes" -a "`vmware_vgauth_enabled`" = "yes" ]; then
+   ôXK¥geët:' vmware_stop_caf
+            fi
+
+            if [  "$have_vgauth" = "yes" -a "`vmware_vgauth_enabled`" = "yes" ]; then
+   ôXK¥gent:' vmware_stop_caf
+            fi
+
+            if [  "$have_vgauth" = "yes" -a "`vmware_vgauth_enabled`" = "yes" ]; then
+   ôXL≥           vmware_exec 'VGAuthService:' vmware_stop_vgauth
+              exitcode=$(($exitcode + $?))
+            fi
+
+          ª3L≥           vmware_exec 'VGAuthService:' vmware_stop_vgauth
+              exitcode=$(($exitcode + $?))
+            fi
+
+          D3M≤  # Signal vmware-user to release any contact with the blocking fs, closing rpc connections etc.
+            vmware_exec 'VMware∑ÚN± User Agent (vmware-user):' vmware_user_request_release_resources
+            rv=$?
+            exitcode=$(($exitcode + $çv))
+
+ JÂN± User Agent (vmware-user):' vmware_user_request_release_resources
+            rv=$?
+            exitcode=$(($exitcode + $rv))
+
+ JÂO∞           if [ "`is_vmblock_needed`" = 'yes' ] ; then
+               # If unblocking vmware-user fails then stopping and unloadãPØing vmblock
+               # probably will also fail.
+               if [ $rv -eq 0 ]; then
+                  vmwaçe_exec 'Block—’PØing vmblock
+               # probably will also fail.
+               if [ $rv -eq 0 ]; then
+                  vmware_exec 'Block—’QÆing file system:' vmware_stop_vmblock
+                  exitcode=$(($exitcode + $?))
+	       fi
+	    fi
+
+            vmware_execﬂãR≠ 'Unmounting HGFS shares:' vmware_unmount_vmhgfs
+            rv=$?
+            vmware_exec 'Guest filesysteí driver:' vmware_stoL$R≠ 'Unmounting HGFS shares:' vmware_unmount_vmhgfs
+            rv=$?
+            vmware_exec 'Guest filesystem driver:' vmware_stoL$S¨p_vmhgfs
+            rv=$(($rv + $?))
+            if [ "`is_vmhgfs_needed`" = 'yes' ]; then
+               exitcode=$(($exitcode	üT´ + $rv))
+            fi
+
+            if [ "`is_vmmemctl_needed`" = 'yes' ]; then
+               vmwaçe_exec 'Guest memory manageˆT´ + $rv))
+            fi
+
+            if [ "`is_vmmemctl_needed`" = 'yes' ]; then
+               vmware_exec 'Guest memory manageˆT´ + $rv))
+            fi
+
+            if [ "`is_vmmemctl_needed`" = 'yes' ]; then
+               vmware_exec 'Guest memory manageˆU™r:' vmware_stop_vmmemctl
+               exitcode=$(($exitcode + $?))
+            fi
+
+        ﬂ# vsock requires vmci to work so iKKU™r:' vmware_stop_vmmemctl
+               exitcode=$(($exitcode + $?))
+            fi
+
+         # vsock requires vmci to work so iKKV©t must be unloaded before vmci
+            if [ "`is_vsock_needed`" = 'yes' ]; then
+               vmware_exec_warn 'VM communic”˜W®ation interface socket family:' vmware_stop_vsock
+               exitcode=$(($exitcodeﬂ+ $?))
+            fi
+
+            if [ "µ∂W®ation interface socket family:' vmware_stop_vsock
+               exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "µ∂Xß`is_vmci_needed`" = 'yes' ]; then
+               vmware_exec_warn 'VM communication interface:' vmware_stop_vmci
+               ØY¶exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "`is_vmsync_needeõ`" = 'yes' ] ; then
+               vmware_exec '&§Y¶exitcode=$(($exitcode + $?))
+            fi
+
+            if [ "`is_vmsync_needed`" = 'yes' ] ; then
+               vmware_exec '&§Z•File system sync driver:' vmware_stop_vmsync
+               exitcode=$(($exitcode + $?))
+            fi
+
+         else
+         ‡ [§   echo -n 'Skipping VMware Tools services shutdown on the host:'
+      ﬂ     vmware_success
+            echo
+         fi
+      6‹[§   echo -n 'Skipping VMware Tools services shutdown on the host:'
+            vmware_success
+            echo
+         fi
+      6‹\£   if [ "$exitcode" -gt 0 ]; then
+            exit 1
+         fi
+
+         rm -f /var/lock/subsys/"$subsys"
+         ;;
+
+      st?]¢tatus)
+         exitcode='0'
+
+         vmware_daemon_status $SYST∫M_DAEMON
+         exitcode=$(($exitcode + $?))
+
+         if [ *Õ]¢tatus)
+         exitcode='0'
+
+         vmware_daemon_status $SYSTEM_DAEMON
+         exitcode=$(($exitcode + $?))
+
+         if [ *Õ]¢tatus)
+         exitcode='0'
+
+         vmware_daemon_status $SYSTEM_DAEMON
+         exitcode=$(($exitcode + $?))
+
+         if [ *Õ^°"$exitcode" -ne 0 ]; then
+            exit 1
+         fi
+ ﬂ       ;;
+
+      restart | force-reload)
+         "$0" stop && "$0" sÄ^°"$exitcode" -ne 0 ]; then
+            exit 1
+         fi
+         ;;
+
+      restart | force-reload)
+         "$0" stop && "$0" sÄ_†tart
+         ;;
+      source)
+         # Used to source the script so that functions can be
+         # selectively overriden.
+ [`ü        return 0
+         ;;
+      *)
+         echoﬂ"Usage: `basename "$0"` {start|stop|status|restart|force-reload}"
+         e1Œ`ü        return 0
+         ;;
+      *)
+         echo "Usage: `basename "$0"` {start|stop|status|restart|force-reload}"
+         e1Œaûxit 1
+   esac
+
+   exit 0
+}
+
+main "$@"
+èX
